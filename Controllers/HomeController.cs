@@ -33,5 +33,59 @@ namespace mejor_precio_3.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        [HttpPost("CrearUsuario")]
+        public IActionResult CrearUsuario(string Nombre, string Email, string Pass, string sexo, int edad)
+        {
+
+            return Content("");
+        }
+        [HttpPut("ModificarContraseña")]
+        public IActionResult ModificarContraseña(string Email, string PassAnt)
+        {
+
+            return Content("");
+        }
+        [HttpPost("ObtenerHistorial")]
+        public IActionResult ObtenerHistorial(string Email)
+        {
+
+            return Content("");
+        }
+        [HttpPut("ActualizarHistorial")]
+        public IActionResult ActualizarHistorial(string Email, string ProductoBuscado)
+        {
+
+            return Content("");
+        }
+        [HttpDelete("EliminarProducto")]
+        public IActionResult EliminarProducto(string Email)
+        {
+
+            return Content("");
+        }
+          [HttpGet("ObtenerProducto")]
+        public IActionResult ObtenerProducto(string nombreProduto)
+        {
+
+            return Content("");
+        }
+         [HttpGet("ObtenerProducto")]
+        public IActionResult ObtenerProducto(int codigoBarras)
+        {
+
+            return Content("");
+        }
+           [HttpGet("CargarProducto")]
+        public IActionResult CargarProducto(string Nombre, string Precio,string Direccion)
+        {
+
+            return Content("");
+        }
+         public IActionResult ObtenerProductos(string NombreProducto)
+        {
+
+            return Content("");
+        }
+
     }
 }
