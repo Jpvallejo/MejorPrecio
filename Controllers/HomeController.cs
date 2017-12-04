@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using mejor_precio_3.Models;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace mejor_precio_3.Controllers
 {
@@ -33,11 +35,20 @@ namespace mejor_precio_3.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpPost("CrearUsuario")]
-        public IActionResult CrearUsuario(string Nombre, string Email, string Pass, string sexo, int edad)
+        [HttpPost("CreateUser")]
+        public IActionResult CreateUser([FromBody] User user)
         {
-
-            return Content("");
+            User user1 = new User();
+            string result = user1.Add(user);
+            if (result == "OK")
+            {
+                //persistencia
+                return Content("OK");
+            }
+            else
+            {
+                return Content(result);
+            }
         }
         [HttpPut("ModificarContraseña")]
         public IActionResult ModificarContraseña(string Email, string PassAnt)
@@ -63,25 +74,25 @@ namespace mejor_precio_3.Controllers
 
             return Content("");
         }
-          [HttpGet("ObtenerProducto")]
+        [HttpGet("ObtenerProducto")]
         public IActionResult ObtenerProducto(string nombreProduto)
         {
 
             return Content("");
         }
-         [HttpGet("ObtenerProducto")]
+        [HttpGet("ObtenerProducto")]
         public IActionResult ObtenerProducto(int codigoBarras)
         {
 
             return Content("");
         }
-           [HttpGet("CargarProducto")]
-        public IActionResult CargarProducto(string Nombre, string Precio,string Direccion)
+        [HttpGet("CargarProducto")]
+        public IActionResult CargarProducto(string Nombre, string Precio, string Direccion)
         {
 
             return Content("");
         }
-         public IActionResult ObtenerProductos(string NombreProducto)
+        public IActionResult ObtenerProductos(string NombreProducto)
         {
 
             return Content("");
