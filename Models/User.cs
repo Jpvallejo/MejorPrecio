@@ -19,7 +19,7 @@ namespace mejor_precio_3.Models
         public string Gender { get; set; }
         Queue Historal;
         public int Id{get;set;}
-        public bool Verify{get;set;}
+        public bool Verified{get;set;}
         public string Role{get;set;}
 
     }
