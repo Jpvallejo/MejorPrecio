@@ -36,19 +36,10 @@ namespace mejor_precio_3.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         [HttpPost("CreateUser")]
-        public IActionResult CreateUser([FromBody] User user)
+        public IActionResult CreateUser([FromBody] UserAdd userAdd)
         {
-            User user1 = new User();
-            string result = user1.Add(user);
-            if (result == "OK")
-            {
-                //persistencia
-                return Content("OK");
-            }
-            else
-            {
-                return Content(result);
-            }
+            return Content(userAdd.Validate(userAdd));
+
         }
         [HttpPut("ModificarContraseña")]
         public IActionResult ModificarContraseña(string Email, string PassAnt)
@@ -89,10 +80,15 @@ namespace mejor_precio_3.Controllers
         [HttpPost("NewProduct")]
         public IActionResult NewProduct([FromBody] Product product)
         {
-            if(product.SaveProduct())
+            if (product.SaveProduct())
                 return Content("Ok");
 
             return Content("Error");
+        }
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] UserAdd user)
+        {
+            return Content(user.Login(user.Mail,user.Password));        
         }
 
     }

@@ -17,23 +17,10 @@ namespace mejor_precio_3.Models
         public string Password { get; set; }
         public int Age { get; set; }
         public string Gender { get; set; }
-        Queue queue;
+        Queue Historal;
+        public int Id{get;set;}
+        public bool Verified{get;set;}
+        public string Role{get;set;}
 
-        public string Add(User user)
-        {
-            var pass = user.Password;
-            Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
-
-            if (!pat.IsMatch(user.Password))
-                return "Error en la contrasena +8, Mayus,Minus,numero";
-            Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
-            if (!regex.IsMatch(user.Mail))
-                return "Error en el mail";
-
-            return "OK";
-
-
-
-        }
     }
 }
