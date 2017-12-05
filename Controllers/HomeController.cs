@@ -68,11 +68,11 @@ namespace mejor_precio_3.Controllers
 
             return Content("");
         }
-        [HttpDelete("EliminarProducto")]
-        public IActionResult EliminarProducto(string Email)
+        [HttpDelete("RemoveProduct")]
+        public IActionResult RemoveProduct([FromBody] Product product)
         {
-
-            return Content("");
+            product.Delete();
+            return Content("Product deleted successfully");
         }
         [HttpGet("ObtenerProducto")]
         public IActionResult ObtenerProducto(string nombreProduto)
@@ -86,16 +86,13 @@ namespace mejor_precio_3.Controllers
 
             return Content("");
         }
-        [HttpGet("CargarProducto")]
-        public IActionResult CargarProducto(string Nombre, string Precio, string Direccion)
+        [HttpPost("NewProduct")]
+        public IActionResult NewProduct([FromBody] Product product)
         {
+            if(product.SaveProduct())
+                return Content("Ok");
 
-            return Content("");
-        }
-        public IActionResult ObtenerProductos(string NombreProducto)
-        {
-
-            return Content("");
+            return Content("Error");
         }
 
     }
