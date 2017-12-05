@@ -4,7 +4,7 @@ namespace mejor_precio_3.Models
     {
         public string Name {get; set;}
 
-        public string Barcode {get; set;}
+        public int Barcode {get; set;}
 
         public decimal Price {get; set;}
 
