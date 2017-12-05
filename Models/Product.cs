@@ -10,7 +10,7 @@ namespace mejor_precio_3.Models
 
         public string Location {get; set;}
 
-        public bool CreateProduct(Product prod){
+        public bool SaveProduct(){
             return true;
         }  
         public void Delete(){
