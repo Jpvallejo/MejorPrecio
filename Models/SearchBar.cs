@@ -22,36 +22,11 @@ namespace mejor_precio_3.Models
 
                 double price = i * 1.10;
                 product.Price = (decimal)price;
-                product.Barcode = 24871110;
+                product.Barcode = 1110;
                 productList.Add(product);
             }
             // END MOCK
 
-
-            return productList;
-        }
-
-
-        //This function searches products by their barCode
-        public List<Product> searchProduct(int barCode)
-        {
-            List<Product> productList = new List<Product>();
-
-            //search in the DB for all products with the barCode
-            //received as a parameter
-
-            //MOCK SECTION
-            for (int i = 0; i < 10; i++)
-            {
-                Product product = new Product();
-                product.Name = "Galletitas '9 De Oro'";
-
-                double price = i * 1.10;
-                product.Price = (decimal)price;
-                product.Barcode = barCode;
-                productList.Add(product);
-            }
-            // END MOCK
 
             return productList;
         }
