@@ -9,13 +9,6 @@ namespace mejor_precio_3.Models
         public decimal Price {get; set;}
 
         public string Location {get; set;}
-
-        public bool SaveProduct(){
-            return true;
-        }  
-        public void Delete(){
-            
-        }
     }
     
 }
