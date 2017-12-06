@@ -47,27 +47,11 @@ namespace mejor_precio_3.Controllers
         }
 
 
-        [HttpGet("{productName}", Name ="SearchProduct")]
+        [HttpGet("{productList}", Name = "SearchProduct")]
         public IActionResult SearchProduct(string productName)
         {
             SearchBar searchbar = new SearchBar();
             List<Product> productList = searchbar.searchProduct(productName);
-            
-            if (productList.Count==0)
-            {
-                return Content("No se encontro ningun producto");
-            }
-            else {
-                return Json(productList);
-            }
-        }
-
-
-        [HttpGet("{productBarCode}", Name = "barCode")]
-        public IActionResult SearchProduct(int barCode)
-        {
-            SearchBar searchbar = new SearchBar();
-            List<Product> productList = searchbar.searchProduct(barCode);
 
             if (productList.Count == 0)
             {
@@ -87,7 +71,15 @@ namespace mejor_precio_3.Controllers
 
             return Content("Error");
         }
+<<<<<<< HEAD
       
+=======
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] UserAdd user)
+        {
+            return Content(user.Login(user.Mail, user.Password));
+        }
+>>>>>>> integration
 
     }
 }
