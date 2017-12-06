@@ -1,5 +1,8 @@
+using System;
+
 namespace mejor_precio_3.Models
 {
+    [Serializable]
     public class Product
     {
         public string Name {get; set;}

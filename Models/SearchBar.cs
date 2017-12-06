@@ -13,13 +13,13 @@ namespace mejor_precio_3.Models
         {
             List<Product> productList = new List<Product>();
 
-            for (int i = 0; i < originList.Count(); i++)
+           // for (int i = 0; i < originList.Count(); i++)
+           foreach(var product in originList)
             {
-                Product product = new Product();
 
-                if (originList[i].Name == productName)
+                if (product.Name == productName)
                 {
-                    productList.Add (originList[i]);
+                    productList.Add (product);
                 }
             }
             return productList;
@@ -32,13 +32,13 @@ namespace mejor_precio_3.Models
             //search in the DB for all products that contain the string
             //received through parameter and add them to the list
 
-            for (int i = 0; i < originList.Count(); i++)
+            //for (int i = 0; i < originList.Count(); i++)
+            foreach(var product in  originList)
             {
-                Product product = new Product();
 
-                if (originList[i].Barcode == barCode)
+                if (product.Barcode == barCode)
                 {
-                    productList.Add(originList[i]);
+                    productList.Add(product);
                 }
             }
             return productList;
