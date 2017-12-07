@@ -39,38 +39,6 @@ namespace mejor_precio_3.Controllers
         }
        
        
-        [HttpDelete("RemoveProduct")]
-        public IActionResult RemoveProduct([FromBody] Product product)
-        {
-            product.Delete();
-            return Content("Product deleted successfully");
-        }
-
-
-        [HttpGet("{productList}", Name = "SearchProduct")]
-        public IActionResult SearchProduct(string productName)
-        {
-            SearchBar searchbar = new SearchBar();
-            List<Product> productList = searchbar.searchProduct(productName);
-
-            if (productList.Count == 0)
-            {
-                return Content("No se encontro ningun producto");
-            }
-            else
-            {
-                return Json(productList);
-            }
-        }
-
-        [HttpPost("NewProduct")]
-        public IActionResult NewProduct([FromBody] Product product)
-        {
-            if (product.SaveProduct())
-                return Content("Ok");
-
-            return Content("Error");
-        }
       
 
     }
