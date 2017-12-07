@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace mejor_precio_3.Controllers
 {
+    [Route("Home")]
     public class HomeController : Controller
     {
         public IActionResult Index()
@@ -17,6 +18,7 @@ namespace mejor_precio_3.Controllers
             return View();
         }
 
+[Route("About")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -35,30 +37,8 @@ namespace mejor_precio_3.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpPost("CreateUser")]
-        public IActionResult CreateUser([FromBody] UserAdd userAdd)
-        {
-            return Content(userAdd.Validate(userAdd));
-
-        }
-        [HttpPut("ModificarContraseña")]
-        public IActionResult ModificarContraseña(string Email, string PassAnt)
-        {
-
-            return Content("");
-        }
-        [HttpPost("ObtenerHistorial")]
-        public IActionResult ObtenerHistorial(string Email)
-        {
-
-            return Content("");
-        }
-        [HttpPut("ActualizarHistorial")]
-        public IActionResult ActualizarHistorial(string Email, string ProductoBuscado)
-        {
-
-            return Content("");
-        }
+       
+       
         [HttpDelete("RemoveProduct")]
         public IActionResult RemoveProduct([FromBody] Product product)
         {
@@ -91,11 +71,15 @@ namespace mejor_precio_3.Controllers
 
             return Content("Error");
         }
+<<<<<<< HEAD
+      
+=======
         [HttpPost("Login")]
         public IActionResult Login([FromBody] UserAdd user)
         {
             return Content(user.Login(user.Mail, user.Password));
         }
+>>>>>>> integration
 
     }
 }

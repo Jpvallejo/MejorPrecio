@@ -12,8 +12,7 @@ namespace mejor_precio_3.Models
     {
         public string Name { get; set; }
         public string Mail { get; set; }
-        [Required]
-        [DataType(DataType.Password)]
+     
         public string Password { get; set; }
         public int Age { get; set; }
         public string Gender { get; set; }

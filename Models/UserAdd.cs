@@ -33,17 +33,5 @@ namespace mejor_precio_3.Models
             return "OK";//Agregar en la DB
 
         }
-        public string Login(string mail, string pass)
-        {
-            if (mail != "" && pass != "")
-            {
-                //Preguntar en DB si es correcto
-                return "User loged"+ mail;
-            }
-            else
-            {
-                return "Error en el logueo";
-            }
-        }
     }
 }
