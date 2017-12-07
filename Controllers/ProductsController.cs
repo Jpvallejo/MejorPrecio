@@ -26,20 +26,24 @@ namespace mejor_precio_3.Controllers
         {
             byte[] objectBytes;
             List<Product> mockProducts;
-            if(HttpContext.Session.TryGetValue("List",out objectBytes))
+            if (HttpContext.Session.TryGetValue("List", out objectBytes))
             {
-            //var objectBytes = HttpContext.Session.Get("List");
+                //var objectBytes = HttpContext.Session.Get("List");
                 var chargingStream = new MemoryStream();
                 var binFormatterGetting = new BinaryFormatter();
 
                 // Where 'objectBytes' is your byte array.
-                chargingStream.Write (objectBytes, 0, objectBytes.Length);
+                chargingStream.Write(objectBytes, 0, objectBytes.Length);
                 chargingStream.Position = 0;
 
                 mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
             }
-            else{
+            else
+            {
                 mockProducts = new List<Product>();
+            }
+            if(mockProducts.Exists(x => x.Location == product.Location)){
+                mockProducts.Remove(mockProducts.Find(x => x.Location == product.Location));
             }
             mockProducts.Add(product);
             mockProducts.Sort((x, y) => x.Price.CompareTo(y.Price));
@@ -57,14 +61,14 @@ namespace mejor_precio_3.Controllers
         {
             byte[] objectBytes;
             List<Product> mockProducts;
-            if(HttpContext.Session.TryGetValue("List",out objectBytes))
+            if (HttpContext.Session.TryGetValue("List", out objectBytes))
             {
-            //var objectBytes = HttpContext.Session.Get("List");
+                //var objectBytes = HttpContext.Session.Get("List");
                 var chargingStream = new MemoryStream();
                 var binFormatterGetting = new BinaryFormatter();
 
                 // Where 'objectBytes' is your byte array.
-                chargingStream.Write (objectBytes, 0, objectBytes.Length);
+                chargingStream.Write(objectBytes, 0, objectBytes.Length);
                 chargingStream.Position = 0;
 
                 mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
@@ -80,14 +84,14 @@ namespace mejor_precio_3.Controllers
             List<Product> result = null;
             byte[] objectBytes;
             List<Product> mockProducts;
-            if(HttpContext.Session.TryGetValue("List",out objectBytes))
+            if (HttpContext.Session.TryGetValue("List", out objectBytes))
             {
-            //var objectBytes = HttpContext.Session.Get("List");
+                //var objectBytes = HttpContext.Session.Get("List");
                 var chargingStream = new MemoryStream();
                 var binFormatterGetting = new BinaryFormatter();
 
                 // Where 'objectBytes' is your byte array.
-                chargingStream.Write (objectBytes, 0, objectBytes.Length);
+                chargingStream.Write(objectBytes, 0, objectBytes.Length);
                 chargingStream.Position = 0;
 
                 mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
@@ -102,14 +106,14 @@ namespace mejor_precio_3.Controllers
             List<Product> result = null;
             byte[] objectBytes;
             List<Product> mockProducts;
-            if(HttpContext.Session.TryGetValue("List",out objectBytes))
+            if (HttpContext.Session.TryGetValue("List", out objectBytes))
             {
-            //var objectBytes = HttpContext.Session.Get("List");
+                //var objectBytes = HttpContext.Session.Get("List");
                 var chargingStream = new MemoryStream();
                 var binFormatterGetting = new BinaryFormatter();
 
                 // Where 'objectBytes' is your byte array.
-                chargingStream.Write (objectBytes, 0, objectBytes.Length);
+                chargingStream.Write(objectBytes, 0, objectBytes.Length);
                 chargingStream.Position = 0;
 
                 mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;

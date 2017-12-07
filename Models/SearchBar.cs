@@ -9,17 +9,21 @@ namespace mejor_precio_3.Models
     {
         //This function searches products on a productList by their name and returns
         //all products with that name on another list
-        public List<Product> SearchProductName (List<Product> originList, string productName)
+        public List<Product> SearchProductName(List<Product> originList, string productName)
         {
             List<Product> productList = new List<Product>();
 
-           // for (int i = 0; i < originList.Count(); i++)
-           foreach(var product in originList)
+            // for (int i = 0; i < originList.Count(); i++)
+            foreach (var product in originList)
             {
 
                 if (product.Name == productName)
                 {
-                    productList.Add (product);
+                    productList.Add(product);
+                }
+                if (productList.Count() >= 5)
+                {
+                    break;
                 }
             }
             return productList;
@@ -33,12 +37,16 @@ namespace mejor_precio_3.Models
             //received through parameter and add them to the list
 
             //for (int i = 0; i < originList.Count(); i++)
-            foreach(var product in  originList)
+            foreach (var product in originList)
             {
 
                 if (product.Barcode == barCode)
                 {
                     productList.Add(product);
+                }
+                if (productList.Count() >= 5)
+                {
+                    break;
                 }
             }
             return productList;
