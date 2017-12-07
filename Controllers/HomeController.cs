@@ -71,15 +71,7 @@ namespace mejor_precio_3.Controllers
 
             return Content("Error");
         }
-<<<<<<< HEAD
       
-=======
-        [HttpPost("Login")]
-        public IActionResult Login([FromBody] UserAdd user)
-        {
-            return Content(user.Login(user.Mail, user.Password));
-        }
->>>>>>> integration
 
     }
 }
