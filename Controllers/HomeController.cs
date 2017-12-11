@@ -12,7 +12,7 @@ namespace mejor_precio_3.Controllers
 {
     [Route("Home")]
     public class HomeController : Controller
-    {
+    {[Route("Index")]
         public IActionResult Index()
         {
             return View();
