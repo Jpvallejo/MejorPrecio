@@ -10,9 +10,8 @@ using System.Text.RegularExpressions;
 
 namespace mejor_precio_3.Controllers
 {
-    [Route("Home")]
     public class HomeController : Controller
-    {[Route("Index")]
+    {
         public IActionResult Index()
         {
             return View();
@@ -38,6 +37,11 @@ namespace mejor_precio_3.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
        
+       [HttpPost("{id}", Name = "Search")]
+       public IActionResult Search(string id)
+       {
+           return RedirectToAction("SearchByName", "Products",id);
+       }
        
       
 
