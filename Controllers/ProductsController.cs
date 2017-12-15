@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Microsoft.AspNetCore.Authorization;
 
 namespace mejor_precio_3.Controllers
 {
     [Route("Products")]
     public class ProductsController : Controller
     {
+        private ProductPersistence persistence = new ProductPersistence();
         private SearchBar searchBar = new SearchBar();
 
         public IActionResult Index()
@@ -20,47 +22,38 @@ namespace mejor_precio_3.Controllers
             return View();
         }
 
-        [Route("CreateProduct")]
-        [HttpPost]
-        public IActionResult CreateProduct([FromBody] Product product)
+        [Route("Create")]
+        public ActionResult Create()
         {
-            byte[] objectBytes;
-            List<Product> mockProducts;
-            if (HttpContext.Session.TryGetValue("List", out objectBytes))
-            {
-                //var objectBytes = HttpContext.Session.Get("List");
-                var chargingStream = new MemoryStream();
-                var binFormatterGetting = new BinaryFormatter();
+            var model = new ProductViewModel();
+            model.ProductsNames = persistence.GetAllProductNames();
 
-                // Where 'objectBytes' is your byte array.
-                chargingStream.Write(objectBytes, 0, objectBytes.Length);
-                chargingStream.Position = 0;
-
-                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
-            }
-            else
-            {
-                mockProducts = new List<Product>();
-            }
-            if(mockProducts.Exists(x => x.Location == product.Location)){
-                mockProducts.Remove(mockProducts.Find(x => x.Location == product.Location));
-            }
-            mockProducts.Add(product);
-            mockProducts.Sort((x, y) => x.Price.CompareTo(y.Price));
-
-            var mStream = new MemoryStream();
-            var binFormatter = new BinaryFormatter();
-            binFormatter.Serialize(mStream, mockProducts);
-            var listOfBytes = mStream.ToArray();
-            HttpContext.Session.Set("List", listOfBytes);
-            return Content("Product added correctly");
+            return View(model);
         }
 
-        [HttpDelete("DeleteProduct")]
-        public IActionResult DeleteProduct([FromBody] Product product)
+
+
+        //[Authorize]
+        [Route("Create")]
+        [HttpPost]
+        public ActionResult Create(ProductViewModel model)
         {
+            var product = new Price { price = model.price, location = model.location };
+            product.productId = persistence.GetProductByName(model.selectedProduct).Id;
+            if (persistence.SavePrice(product))
+            {
+                return RedirectToAction("Index", "");//Content("Product added correctly");
+
+            }
+            return Content("Error");
+        }
+        [Authorize(Roles = "admin")]
+        [HttpDelete("DeleteProduct")]
+        public IActionResult DeleteProduct([Bind("Name,Barcode,Brand")]Product prod, [Bind("price,location")] Price product)
+        {
+            // product.product = prod;
             byte[] objectBytes;
-            List<Product> mockProducts;
+            List<Price> mockProducts;
             if (HttpContext.Session.TryGetValue("List", out objectBytes))
             {
                 //var objectBytes = HttpContext.Session.Get("List");
@@ -71,54 +64,25 @@ namespace mejor_precio_3.Controllers
                 chargingStream.Write(objectBytes, 0, objectBytes.Length);
                 chargingStream.Position = 0;
 
-                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
+                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Price>;
                 mockProducts.Remove(product);
             }
             return Content("Product deleted successfully");
         }
 
-        [Route("search/byBarcode")]
+        [Route("searchByBarcode")]
         [HttpGet("{barcode}")]
-        public IActionResult SearchWithBarcode(int barcode)
+        public IActionResult SearchWithBarcode(string barcode)
         {
-            List<Product> result = null;
-            byte[] objectBytes;
-            List<Product> mockProducts;
-            if (HttpContext.Session.TryGetValue("List", out objectBytes))
-            {
-                //var objectBytes = HttpContext.Session.Get("List");
-                var chargingStream = new MemoryStream();
-                var binFormatterGetting = new BinaryFormatter();
+            var result = searchBar.SearchProductBarcode(barcode);
 
-                // Where 'objectBytes' is your byte array.
-                chargingStream.Write(objectBytes, 0, objectBytes.Length);
-                chargingStream.Position = 0;
-
-                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
-                result = searchBar.SearchProductBarcode(mockProducts, barcode);
-            }
             return Json(result);
         }
-        [Route("search/byName")]
+        [Route("searchByName")]
         [HttpGet("{name}")]
         public IActionResult SearchWithName(string name)
         {
-            List<Product> result = null;
-            byte[] objectBytes;
-            List<Product> mockProducts;
-            if (HttpContext.Session.TryGetValue("List", out objectBytes))
-            {
-                //var objectBytes = HttpContext.Session.Get("List");
-                var chargingStream = new MemoryStream();
-                var binFormatterGetting = new BinaryFormatter();
-
-                // Where 'objectBytes' is your byte array.
-                chargingStream.Write(objectBytes, 0, objectBytes.Length);
-                chargingStream.Position = 0;
-
-                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Product>;
-                result = searchBar.SearchProductName(mockProducts, name);
-            }
+            var result = searchBar.SearchProductName(name);
             return Json(result);
         }
 

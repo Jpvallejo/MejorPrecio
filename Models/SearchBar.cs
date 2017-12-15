@@ -9,17 +9,30 @@ namespace mejor_precio_3.Models
     {
         //This function searches products on a productList by their name and returns
         //all products with that name on another list
-        public List<Product> SearchProductName(List<Product> originList, string productName)
+        public List<Price> SearchProductName(string productName)
         {
-            List<Product> productList = new List<Product>();
+            var persistence = new ProductPersistence();
+            List<Price> productList = new List<Price>();
 
-            // for (int i = 0; i < originList.Count(); i++)
-            foreach (var product in originList)
+            var productId = persistence.GetProductByName(productName).Id;
+            productList = persistence.GetTopFive(productId);
+            return productList;
+        }
+
+        //This function searches products by their barCode
+        public List<Price> SearchProductBarcode(string barcode)
+        {/*
+            List<Price> productList = new List<Price>();
+            //search in the DB for all products that contain the string
+            //received through parameter and add them to the list
+
+            //for (int i = 0; i < originList.Count(); i++)
+            foreach (var article in originList)
             {
 
-                if (product.Name == productName)
+                if (article.product.Barcode == barCode)
                 {
-                    productList.Add(product);
+                    productList.Add(article);
                 }
                 if (productList.Count() >= 5)
                 {
@@ -27,28 +40,12 @@ namespace mejor_precio_3.Models
                 }
             }
             return productList;
-        }
+            */ 
+            var persistence = new ProductPersistence();
+            List<Price> productList = new List<Price>();
 
-        //This function searches products by their barCode
-        public List<Product> SearchProductBarcode(List<Product> originList, int barCode)
-        {
-            List<Product> productList = new List<Product>();
-            //search in the DB for all products that contain the string
-            //received through parameter and add them to the list
-
-            //for (int i = 0; i < originList.Count(); i++)
-            foreach (var product in originList)
-            {
-
-                if (product.Barcode == barCode)
-                {
-                    productList.Add(product);
-                }
-                if (productList.Count() >= 5)
-                {
-                    break;
-                }
-            }
+            var productId = persistence.GetProductByBarcode(barcode).Id;
+            productList = persistence.GetTopFive(productId);
             return productList;
         }
     }

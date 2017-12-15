@@ -1,17 +1,20 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace mejor_precio_3.Models
 {
-    [Serializable]
     public class Product
     {
+
+        [Key]
+        public int Id {get; set;}
         public string Name { get; set; }
 
-        public int Barcode { get; set; }
+        public string Barcode { get; set; }
 
-        public decimal Price { get; set; }
+        public string Brand {get; set;}
 
-        public string Location { get; set; }
+        
     }
 
 }
