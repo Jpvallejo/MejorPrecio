@@ -1,14 +1,25 @@
 @model mejor_precio_3.Models.ProductViewModel
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="~/js/jquery.easy-autocomplete.min.js"></script> 
+
+<!-- CSS file -->
+<link rel="stylesheet" href="~/js/easy-autocomplete.min.css"> 
+
+<!-- Additional CSS Themes file - not required-->
+<link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css"> 
+
+
 <h4>ProductView</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
             @{ Html.BeginForm(); }
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @Html.EditorForModel()
-            <div class="form-group">
+       
+          producto <input id="provider-remote" /><br>
+        <input type="hidden" id="hfCustomer" name="CustomerId"/>
                 <label asp-for="price" class="control-label"></label>
                 <input asp-for="price" class="form-control" />
                 <span asp-validation-for="price" class="text-danger"></span>
@@ -31,3 +42,40 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+
+
+
+
+
+<script>
+var options = {
+  url: function(phrase) {
+    return "/Products/list?Prefix=" + phrase ;
+  },
+
+  getValue: "name",
+list: {
+		showAnimation: {
+			type: "fade", //normal|slide|fade
+			time: 200,
+			callback: function() {}
+		},
+
+		hideAnimation: {
+			type: "slide", //normal|slide|fade
+			time: 400,
+			callback: function() {}
+		}
+	}
+};
+
+$("#provider-remote").easyAutocomplete(options);
+</script>
+
+
+
+
+
+

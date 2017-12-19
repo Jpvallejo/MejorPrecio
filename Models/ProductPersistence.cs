@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace mejor_precio_3.Models
 {
@@ -59,20 +61,23 @@ namespace mejor_precio_3.Models
 
 
         public List<string> GetAllProductNames()
-        {
+        { StringBuilder sb = new StringBuilder();
             var list = new List<string>();
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
                 var command = new SqlCommand("SELECT Name FROM Products", conn);
                 var reader = command.ExecuteReader();
+             
                 while (reader.Read())
                 {
                     list.Add(reader["Name"].ToString());
                 }
                 return list;
             }   
+
         }
+        
         public List<Price> GetTopFive(int productId)
         {
             var list = new List<Price>();
@@ -99,7 +104,24 @@ namespace mejor_precio_3.Models
                 return list;
             }
         }
+   public List<string> GetProductAutoComplete(string ProductName)
+        {
+            var list = new List<string>();
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                var command = new SqlCommand("SELECT Name FROM Products WHERE Name Like '%' + @searchName + '%' ORDER BY Name", conn);
+                command.Parameters.AddWithValue("@searchName", ProductName);
 
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    list.Add(reader["Name"].ToString());
+                }
+                return list;
+
+            }
+        }
 
         public bool SavePrice(Price price)
         {

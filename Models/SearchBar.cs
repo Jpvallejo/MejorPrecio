@@ -40,7 +40,7 @@ namespace mejor_precio_3.Models
                 }
             }
             return productList;
-            */ 
+            */
             var persistence = new ProductPersistence();
             List<Price> productList = new List<Price>();
 
