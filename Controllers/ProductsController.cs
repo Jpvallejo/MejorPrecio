@@ -45,9 +45,8 @@ namespace mejor_precio_3.Controllers
         [HttpPost]
         public ActionResult Create(ProductViewModel model)
         {
-            var product = new Price { price = model.price, location = model.location };
-            product.productId = persistence.GetProductByName(model.selectedProduct).Id;
-            if (persistence.SavePrice(product))
+            var product = new Price ();
+            if(product.SaveProduct(model))
             {
                 return RedirectToAction("Index", "");//Content("Product added correctly");
 

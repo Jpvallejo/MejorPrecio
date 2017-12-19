@@ -8,7 +8,7 @@ namespace mejor_precio_3.Models
 {
     public class ProductPersistence
     {
-        string cString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True"; //A cambiar cuando nos den el cstring de Azure
+        string cString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=mejor_precio_3;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"; //A cambiar cuando nos den el cstring de Azure
         public Product GetProductByName(string name)
         {
 
@@ -92,9 +92,12 @@ namespace mejor_precio_3.Models
                 {
                     int.TryParse(reader["Id"].ToString(), out int id);
                     decimal.TryParse(reader["Price"].ToString(), out decimal price);
+                    double.TryParse(reader["Latitude"].ToString(),out double lat);
+                    double.TryParse(reader["Longitude"].ToString(),out double longitude);
 
                     var actualPrice = new Price();
-                    actualPrice.location = reader["Location"].ToString();
+                    actualPrice.latitude = lat;
+                    actualPrice.longitude = longitude;
                     actualPrice.price = price;
                     actualPrice.Id = id;
                     actualPrice.productId = productId;
@@ -128,14 +131,15 @@ namespace mejor_precio_3.Models
 
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
-                new SqlParameter("@adress", SqlDbType.NVarChar) {Value = price.location},
-                new SqlParameter("@unitPrice", SqlDbType.Money) {Value = price.price},
-                new SqlParameter("@idProduct", SqlDbType.Int) { Value = price.productId},
+                new SqlParameter("@latitude", price.latitude),
+                new SqlParameter("@longitude", price.longitude),
+                new SqlParameter("@unitPrice", price.price),
+                new SqlParameter("@idProduct", price.productId)
             };
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("INSERT INTO Prices (Location,Price,productId) VALUES (@adress, @unitPrice, @idProduct)", conn);
+                var command = new SqlCommand("INSERT INTO Prices (Latitude,Longitude,Price,productId) VALUES (@latitude,@longitude, @unitPrice, @idProduct)", conn);
                 command.Parameters.AddRange(parameters.ToArray());
                 try
                 {
