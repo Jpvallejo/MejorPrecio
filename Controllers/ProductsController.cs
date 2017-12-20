@@ -70,9 +70,17 @@ namespace mejor_precio_3.Controllers
         }
 
         [Route("searchByBarcode")]
-        [HttpGet("{barcode}")]
-        public IActionResult SearchWithBarcode(string barcode)
+        [HttpPost]
+        public IActionResult SearchWithBarcode(IFormFile file)
         {
+            var decoder = new BarcodeService();
+            string barcode = null;
+            try{
+                barcode = decoder.GetBarcode(file);
+            }
+            catch{
+                return null;
+            }
             var result = searchBar.SearchProductBarcode(barcode);
 
             return Json(result);

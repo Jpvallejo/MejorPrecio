@@ -31,9 +31,27 @@
     }
 
 </div>
+
+@using (Html.BeginForm("SearchByBarcode", "Products", FormMethod.Post, 
+                            new { enctype = "multipart/form-data" }))
+{  
+    <label for="file">Busqueda Por Codigo de Barras:</label> 
+    <input type="file" name="file" id="file" style="width: 100%;" /> 
+    <input type="submit" onclick="getproduct()" value="Buscar" class="submit" /> 
+}
     <iframe
   width="700"
   height="550"
   frameborder="2" style="border:2"
   src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCjP-q3fTsUk-z0pPGVlnmW_LilMGX4k6c
     &q=Lagash,Buenos+Aires,+Argentina" allowfullscreen>
+
+
+    <script>
+        function getproduct(){
+            var file = document.getElementById('file').files[0];
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Products/SearchByBarcode", false);
+            xhr.send(file);
+        }
+    </script>
