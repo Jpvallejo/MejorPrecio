@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using mejor_precio_3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace mejor_precio_3.Controllers
 {
@@ -27,11 +26,19 @@ namespace mejor_precio_3.Controllers
         {
             var model = new ProductViewModel();
             model.ProductsNames = persistence.GetAllProductNames();
-
+            ViewBag.lista = model.ProductsNames;
             return View(model);
         }
 
+        [Route("List")]
+        public JsonResult List(string Prefix)
+        {
+            var model = new ProductViewModel();
+            var prodlist = persistence.GetProductAutoComplete(Prefix)
+                .Select(s => new { Name = s });
 
+            return Json(prodlist);
+        }
 
         //[Authorize]
         [Route("Create")]
@@ -44,6 +51,7 @@ namespace mejor_precio_3.Controllers
                 return RedirectToAction("Index", "");//Content("Product added correctly");
 
             }
+
             return Content("Error");
         }
         [Authorize(Roles = "admin")]

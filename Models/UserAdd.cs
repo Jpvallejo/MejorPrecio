@@ -18,7 +18,6 @@ namespace mejor_precio_3.Models
         public String Password { get; set; }
         public int Age { get; set; }
         public char Gender { get; set; }
-        Queue queue;
 
         public void Validate(UserAdd user)
         {
