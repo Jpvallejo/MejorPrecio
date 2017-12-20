@@ -16,7 +16,6 @@ namespace mejor_precio_3.Models
         public string Password { get; set; }
         public int Age { get; set; }
         public char Gender { get; set; }
-        Queue Historal;
         public int Id { get; set; }
         public int Verified { get; set; }
         public string Role { get; set; }

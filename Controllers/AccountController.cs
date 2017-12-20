@@ -17,14 +17,13 @@ namespace mejor_precio_3.Controllers
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] UserAdd userAdd)
         {
-            string result;
             try
             {
                 userAdd.Validate(userAdd);
 
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(userAdd.Password);
                 data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-                userAdd.Password = System.Text.Encoding.ASCII.GetString(data);
+                userAdd.Password = System.Text.Encoding.ASCII.GetString(data);    
                 User user = new User();
                 bool existe = user.Exist(userAdd.Mail);
                 if (!existe)
