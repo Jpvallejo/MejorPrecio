@@ -9,12 +9,19 @@ namespace mejor_precio_3.Models
     public class Geocoder
     {
 
-        public Tuple<double,double> GetLatLong(string adress)
+        public Tuple<double, double> GetLatLong(string adress)
         {
-        IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCjP-q3fTsUk-z0pPGVlnmW_LilMGX4k6c" };
-        IEnumerable<Address> addresses = geocoder.GeocodeAsync(adress + "Buenos Aires Argentina").Result;
-        var tuple = new Tuple<double,double>(addresses.First().Coordinates.Latitude, addresses.First().Coordinates.Longitude);
-        return tuple;
+            IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCjP-q3fTsUk-z0pPGVlnmW_LilMGX4k6c" };
+            IEnumerable<Address> addresses = geocoder.GeocodeAsync(adress + "Buenos Aires Argentina").Result;
+            var tuple = new Tuple<double, double>(addresses.First().Coordinates.Latitude, addresses.First().Coordinates.Longitude);
+            return tuple;
+        }
+
+        public string GetAdress(double latitude, double longitude)
+        {
+            IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCjP-q3fTsUk-z0pPGVlnmW_LilMGX4k6c" };
+            IEnumerable<Address> addresses = geocoder.ReverseGeocodeAsync(latitude,longitude).Result;
+            return addresses.First().FormattedAddress;
         }
     }
 }
