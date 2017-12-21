@@ -181,7 +181,7 @@ namespace mejor_precio_3.Models
 
                 var reader = command.ExecuteReader();
 
-                if (reader != null)
+                if (reader.HasRows)
                 {
                     return true;
                 }
