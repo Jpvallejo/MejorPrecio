@@ -74,11 +74,9 @@ namespace mejor_precio_3.Models
                     list.Add(reader["Name"].ToString());
                 }
                 return list;
-            }   
-
+            }
         }
-        
-        public List<Price> GetTopFive(int productId)
+        public List<PriceViewModel> GetTopFive(Product product)
         {
             var geocoder = new Geocoder();
             var list = new List<PriceViewModel>();
@@ -183,7 +181,7 @@ namespace mejor_precio_3.Models
 
                 var reader = command.ExecuteReader();
 
-                if (reader != null)
+                if (reader.HasRows)
                 {
                     return true;
                 }
