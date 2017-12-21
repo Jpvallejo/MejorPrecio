@@ -36,7 +36,6 @@ namespace mejor_precio_3.Controllers
             var model = new ProductViewModel();
             var prodlist = persistence.GetProductAutoComplete(Prefix)
                 .Select(s => new { Name = s });
-
             return Json(prodlist);
         }
 
@@ -49,11 +48,10 @@ namespace mejor_precio_3.Controllers
             if(product.SaveProduct(model))
             {
                 return RedirectToAction("Index", "");//Content("Product added correctly");
-
             }
-
             return Content("Error");
         }
+        
         [Authorize(Roles = "admin")]
         [HttpDelete("DeleteProduct")]
         public IActionResult DeleteProduct([Bind("Name,Barcode,Brand")]Product prod, [Bind("price,location")] Price product)
@@ -81,11 +79,10 @@ namespace mejor_precio_3.Controllers
         [HttpGet("{barcode}")]
         public IActionResult SearchWithBarcode(string barcode)
         {
-            
             var result = searchBar.SearchProductBarcode(barcode);
-
             return Json(result);
         }
+        
         [Route("searchByName")]
         [HttpGet("{name}")]
         public IActionResult SearchWithName(string name)
@@ -99,10 +96,7 @@ namespace mejor_precio_3.Controllers
         {
             var barcodeService = new BarcodeService();
             var barcode = barcodeService.GetBarcode(file);
-
             return RedirectToAction("SearchWithBarcode","",new{barcode =barcode}); 
         }
-
-
     }
 }
