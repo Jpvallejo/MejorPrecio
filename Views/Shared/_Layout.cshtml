@@ -15,45 +15,18 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-     <div class="navbar" style="text-align:center;">
-    @using (Html.BeginForm("SearchWithName", "", FormMethod.Get))
-    {
-        
 
-
-        <ul class="nav navbar-nav">
-            
-            <div class="box">
-  <div class="container-1" style="margin-top:30%; width: 50px; white-space:nowrap;  position:-ms-page;">
-      <span class="icon"><i style="margin: 100px auto;  width: 300px; height: 50px;" class="fa fa-search"></i></span>
-      <input type="search" name="name" placeholder="Buscar por Nombre" id="searchBar" />
-            <li><input type="submit" value="Search" /></li>
-  </div>
-</div>
-        </ul>
-    }
-
-    @using (Html.BeginForm("Create", "Products", FormMethod.Get))
-    {
-        <button type = "submit"> Agregar Producto</button>
-    }
-
-
-<div style = "text-align:right;float:right;">
-@using (Html.BeginForm("BarcodeUploading", "Products", FormMethod.Post, 
-                            new { enctype = "multipart/form-data" }))
-{  
-    <label for="file">Busqueda Por Codigo de Barras:</label>
-    <input type="file" name="file" id="file" style="width: 100%; border-radius:3px;" /> 
-    <input type="submit" onclick="getproduct()" value="Buscar" class="submit" style="border-radius:3px; background-color:aquamarine," /> 
-}
-</div>
-            </div>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
+                    <a style = "float:left;margin-top:10px;margin-right:20px">
+                        @using (Html.BeginForm("Create", "Products", FormMethod.Get))
+                            {
+                                <button class="btn btn-primary" type = "submit"> +</button>
+                            }    
+                    </a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -67,6 +40,31 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li>
+                    
+                    <form class="form-inline" action="/Home/SearchWithName">
+                        <div class = "form-group">
+                        <input placeholder="Search a product" style="margin-top:10px;width:100%;float:left"  id="provider-remoteee" name="name"/>
+                        </div>
+                        <button class ="btn btn-primary" style = "margin-top:10px" type="submit">Search</button>
+                    </form>
+                    
+                    </li>
+                    
+                    </ul>
+                    <ul style = "float:right;">
+    
+                        @using (Html.BeginForm("BarcodeUploading", "Products", FormMethod.Post, 
+                                                        new { enctype = "multipart/form-data" }))
+                            {  
+                                
+                                <div class="file-upload">
+    <p for="upload" class="file-upload__label">Buscar por Codigo de Barras</p>
+                                <input  class="file-upload__input" type="file" name="file" id="file" style="width: 100%; border-radius:3px; color:antiquewhite" />
+                                </div>
+                                <button type="submit"  class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar</button> 
+                            }
+
                 </ul>
         </div>
     </nav>
@@ -82,6 +80,14 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="~/js/jquery.easy-autocomplete.min.js"></script> 
+
+<!-- CSS file -->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.min.css"> 
+
+<!-- Additional CSS Themes file - not required-->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css"> 
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -103,6 +109,68 @@
 </body>
 
 
+        <script >
+            var options = {
+  url: function(phrase) {
+    return "/Products/list?Prefix=" + phrase ;
+  },
+
+  getValue: "name",
+list: {
+		showAnimation: {
+			type: "fade", //normal|slide|fade
+			time: 200,
+			callback: function() {}
+		},
+
+		hideAnimation: {
+			type: "slide", //normal|slide|fade
+			time: 400,
+			callback: function() {}
+		}
+	}
+};
+
+$("#provider-remoteee").easyAutocomplete(options);
+        </script>
+
+<style>
+    .btn{
+        background-color: white;
+        color:#222;
+    }
+.file-upload {
+    margin-top: 10px; 
+	position: relative;
+	display: inline-block;
+}
+
+.file-upload__label {
+  display: block;
+  padding: 1em 2em;
+  color: #222;
+  background: #fff;
+  border-radius: .4em;
+  transition: background .3s;
+}
+  
+  .file-upload__label:hover {
+     cursor: pointer;
+     background: #fff;
+  }
+    
+.file-upload__input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 1;
+    width:0;
+    height: 100%;
+    opacity: 0;
+}
+</style>
     
     @RenderSection("Scripts", required: false)
 
