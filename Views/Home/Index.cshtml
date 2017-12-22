@@ -46,7 +46,15 @@
         var mapOptions = { 
             zoom: 12, 
             center: BsAs, 
-            mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP 
+            mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP ,
+            
+  zoomControl: true,
+  mapTypeControl: true,
+  scaleControl: true,
+  streetViewControl: true,
+  rotateControl: true,
+  fullscreenControl: true
+
         }; 
  
         // This makes the div with id "map_canvas" a google map 

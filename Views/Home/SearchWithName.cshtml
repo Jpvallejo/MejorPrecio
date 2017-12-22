@@ -61,7 +61,13 @@
         var mapOptions = { 
             zoom: 12, 
             center: BsAs, 
-            mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP 
+            mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP,
+            zoomControl: true,
+            mapTypeControl: true,
+            scaleControl: true,
+            streetViewControl: true,
+            rotateControl: true,
+            fullscreenControl: true 
         }; 
  
         // This makes the div with id "map_canvas" a google map 
@@ -71,13 +77,19 @@
         // you can either make up a JSON list server side, or call it from a controller using JSONResult 
  
         // Using the JQuery "each" selector to iterate through the JSON list and drop marker pins 
+        var labels = '12345';
+        var labelIndex = 0;
+        
+
         for (var i = 0, length = data.length; i < length; i++) {
             var marker = new google.maps.Marker({ 
                 position : new google.maps.LatLng(data[i].latitude, data[i].longitude),
                 map: map, 
+                animation: google.maps.Animation.DROP,
+                label: labels[labelIndex++ % labels.length],                
                 title: data[i].price,
             });
-            var contentString= "<div class='infoDiv'><h3>"+data[i].productName + "</h3><h4><em>"+ data[i].productBrand + ' - ' + data[i].productBarcode +"</em></h4><p>Aqui el producto se encuentra a <em>$"+ data[i].price + "</em></p></div>" ; 
+            var contentString= "<div class='infoDiv'><h3>"+data[i].productName + "</h3><h4><em>"+ data[i].productBrand + ' - ' + data[i].productBarcode +"</em></h4><p>Aqui el producto se encuentra a <em>$"+ data[i].price + "</em></p> <br> <a href=\"https://www.google.com/maps/search/?api=1&query="+data[i].latitude+","+data[i].longitude+"\" target = \"_blank\">Ver en Google Maps </a></div>" ; 
             google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString + data[i].adress));
         }
  
