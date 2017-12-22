@@ -61,14 +61,15 @@ namespace mejor_precio_3.Models
 
 
         public List<string> GetAllProductNames()
-        { StringBuilder sb = new StringBuilder();
+        {
+            StringBuilder sb = new StringBuilder();
             var list = new List<string>();
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
                 var command = new SqlCommand("SELECT Name FROM Products", conn);
                 var reader = command.ExecuteReader();
-             
+
                 while (reader.Read())
                 {
                     list.Add(reader["Name"].ToString());
@@ -109,7 +110,7 @@ namespace mejor_precio_3.Models
                 return list;
             }
         }
-   public List<string> GetProductAutoComplete(string ProductName)
+        public List<string> GetProductAutoComplete(string ProductName)
         {
             var list = new List<string>();
             using (var conn = new SqlConnection(cString))
@@ -191,21 +192,46 @@ namespace mejor_precio_3.Models
             }
         }
 
-        public void DeletePrice(Price price)
+        public void DeletePrice(int id)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>()
-            {
-                new SqlParameter("@latitude", price.latitude),
-                new SqlParameter("@longitude", price.longitude),
-                new SqlParameter("@idProduct", price.productId)
-            };
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("DELETE * FROM Prices WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct", conn);
-                command.Parameters.AddRange(parameters.ToArray());
+                var command = new SqlCommand("DELETE FROM Prices WHERE Id = @id", conn);
+                command.Parameters.AddWithValue("@id",id);
 
                 command.ExecuteNonQuery();
+            }
+        }
+
+        public List<Price> GetAllPrices()
+        {
+            var list = new List<Price>();
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                var command = new SqlCommand("SELECT * FROM Prices", conn);
+
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader["Id"].ToString(), out int id);
+                    decimal.TryParse(reader["Price"].ToString(), out decimal price);
+                    double.TryParse(reader["Latitude"].ToString(), out double lat);
+                    double.TryParse(reader["Longitude"].ToString(), out double longitude);
+                    int.TryParse(reader["productId"].ToString(),out int productId);
+                    var actualPrice = new Price();
+                    actualPrice.productId = productId;
+                    actualPrice.latitude = lat;
+                    actualPrice.longitude = longitude;
+                    actualPrice.price = price;
+                    actualPrice.Id = id;
+
+
+                    list.Add(actualPrice);
+                }
+                return list;
             }
         }
     }
