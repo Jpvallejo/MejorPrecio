@@ -18,15 +18,13 @@ namespace mejor_precio_3.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(persistence.GetAllPrices());
         }
 
         [Route("Create")]
         public ActionResult Create()
         {
             var model = new ProductViewModel();
-            model.ProductsNames = persistence.GetAllProductNames();
-            ViewBag.lista = model.ProductsNames;
             return View(model);
         }
 
@@ -54,26 +52,12 @@ namespace mejor_precio_3.Controllers
 
             return Content("Error");
         }
-        [Authorize(Roles = "admin")]
-        [HttpDelete("DeleteProduct")]
-        public IActionResult DeleteProduct([Bind("Name,Barcode,Brand")]Product prod, [Bind("price,location")] Price product)
+       // [Authorize(Roles = "admin")]
+        [Route("Delete")]
+        public IActionResult Delete(int id)
         {
             // product.product = prod;
-            byte[] objectBytes;
-            List<Price> mockProducts;
-            if (HttpContext.Session.TryGetValue("List", out objectBytes))
-            {
-                //var objectBytes = HttpContext.Session.Get("List");
-                var chargingStream = new MemoryStream();
-                var binFormatterGetting = new BinaryFormatter();
-
-                // Where 'objectBytes' is your byte array.
-                chargingStream.Write(objectBytes, 0, objectBytes.Length);
-                chargingStream.Position = 0;
-
-                mockProducts = binFormatterGetting.Deserialize(chargingStream) as List<Price>;
-                mockProducts.Remove(product);
-            }
+            persistence.DeletePrice(id);
             return Content("Product deleted successfully");
         }
 
