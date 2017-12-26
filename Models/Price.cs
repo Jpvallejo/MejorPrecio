@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using mejor_precio_3.Persistence;
+using mejor_precio_3.Services;
 
 namespace mejor_precio_3.Models{
     public class Price {

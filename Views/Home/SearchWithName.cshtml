@@ -10,7 +10,7 @@
     } 
 </style> 
  
-<!-- This css is to give a nice big popup "info window" when a marker is clicked on the map --> 
+ 
 <style> 
     .infoDiv { 
         height: 200px; 
@@ -20,10 +20,10 @@
     } 
 </style> 
 <br /> 
-<!-- This is the div that will contain the Google Map --> 
+ 
 <div id="map_canvas" style="height: 550px;"></div> 
  
-<!-- Enclose the Javascript in a "section" so that it is rendered in the correct order after scripts have been loaded etc --> 
+
 @section scripts { 
     <section class="scripts"> 
  
@@ -33,8 +33,7 @@
     $(document).ready(function () { 
         Initialize(); 
     }); 
- 
-    // Where all the fun happens 
+
     function Initialize() { 
  
         var data = function(){
@@ -53,11 +52,11 @@
             });
             return tmp;
         }();
-        // Google has tweaked their interface somewhat - this tells the api to use that new UI 
+
         google.maps.visualRefresh = true; 
         var BsAs = new google.maps.LatLng(-34.603722, -58.381592); 
  
-        // These are options that set initial zoom level, where the map is centered globally to start, and the type of map to show 
+
         var mapOptions = { 
             zoom: 12, 
             center: BsAs, 
@@ -70,13 +69,8 @@
             fullscreenControl: true 
         }; 
  
-        // This makes the div with id "map_canvas" a google map 
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions); 
  
-        // a sample list of JSON encoded data of places to visit in Tunisia 
-        // you can either make up a JSON list server side, or call it from a controller using JSONResult 
- 
-        // Using the JQuery "each" selector to iterate through the JSON list and drop marker pins 
         var labels = '12345';
         var labelIndex = 0;
         
@@ -93,10 +87,6 @@
             google.maps.event.addListener(marker, 'click', getInfoCallback(map, contentString + data[i].adress));
         }
  
-            // Make the marker-pin blue! 
- 
-            // put in some information about each json object - in this case, the opening hours. 
-
         function getInfoCallback(map, content) {
     var infowindow = new google.maps.InfoWindow({content: content});
     return function() {

@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Net;
 using System.Text.RegularExpressions;
+using mejor_precio_3.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace mejor_precio_3.Models
+namespace mejor_precio_3.Persistence
 {
     public class UserPersistence
     {

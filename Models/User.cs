@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
+using mejor_precio_3.Persistence;
 
 namespace mejor_precio_3.Models
 {

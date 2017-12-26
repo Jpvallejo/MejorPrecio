@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using mejor_precio_3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using Microsoft.AspNetCore.Authorization;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+using mejor_precio_3.Persistence;
+using mejor_precio_3.Services;
 
 namespace mejor_precio_3.Controllers
 {

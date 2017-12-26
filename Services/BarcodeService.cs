@@ -1,20 +1,9 @@
-using System;
-
-using System.Collections.Generic;
-
 using System.Drawing;
 using System.IO;
-using System.Linq;
-
-using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Http;
-
-using Microsoft.AspNetCore.Mvc;
-
 using ZXing;
 
-namespace mejor_precio_3.Models
+namespace mejor_precio_3.Services
 {
     public class BarcodeService
     {
