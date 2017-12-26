@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-using Microsoft.AspNetCore.Http;
+using mejor_precio_3.Models;
+using mejor_precio_3.Services;
 
-namespace mejor_precio_3.Models
+namespace mejor_precio_3.Persistence
 {
     public class ProductPersistence
     {

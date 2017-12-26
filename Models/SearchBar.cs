@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using mejor_precio_3.Persistence;
 
 namespace mejor_precio_3.Models
 {

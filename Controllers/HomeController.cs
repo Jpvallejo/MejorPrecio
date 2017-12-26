@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using mejor_precio_3.Models;
-using System.Net;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 namespace mejor_precio_3.Controllers
 {
@@ -16,11 +9,6 @@ namespace mejor_precio_3.Controllers
         
         public IActionResult Index()
         {
-            var persistence = new ProductPersistence();
-            string json = JsonConvert.SerializeObject(persistence.GetAllProductNames());
-
-//write string to file
-            System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory+ @"\productlist.json", json);
             return View();
         }
 

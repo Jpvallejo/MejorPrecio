@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using mejor_precio_3.Models;
-using System.Net;
-using System.Text.RegularExpressions;
 
 namespace mejor_precio_3.Controllers
 {
