@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace mejor_precio_3.Models
+namespace MejorPrecio3.Models
 {
     public class ProductViewModel
     {

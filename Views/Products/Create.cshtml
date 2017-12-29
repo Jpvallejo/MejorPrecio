@@ -15,8 +15,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-            @{ Html.BeginForm(); }
-        <form asp-action="Create">
+            @using (Html.BeginForm("", "Products", FormMethod.Post))
+            {
+        
        <div>
 
                  <label class="control-label">Product Name</label>
@@ -33,8 +34,7 @@
                 <span asp-validation-for="location" class="text-danger"></span>
             </div>
             <input type="submit" value="Subir Producto" />
-        </form>
-            @{ Html.EndForm(); }
+            }
     </div>
 </div>
 

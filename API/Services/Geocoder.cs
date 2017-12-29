@@ -4,7 +4,7 @@ using System.Linq;
 using Geocoding;
 using Geocoding.Google;
 
-namespace mejor_precio_3.Services
+namespace MejorPrecio3.Services
 {
     public class Geocoder
     {

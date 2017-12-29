@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
-using mejor_precio_3.Models;
-using mejor_precio_3.Services;
+using MejorPrecio3.Models;
+using System;
 
-namespace mejor_precio_3.Persistence
+namespace MejorPrecio3.Persistence
 {
     public class ProductPersistence
     {
-        string cString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=mejor_precio_3;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"; //A cambiar cuando nos den el cstring de Azure
+        string cString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MejorPrecio3;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"; //A cambiar cuando nos den el cstring de Azure
         public Product GetProductByName(string name)
         {
 
@@ -26,8 +26,7 @@ namespace mejor_precio_3.Persistence
                     product.Name = reader["Name"].ToString();
                     product.Brand = reader["Brand"].ToString();
                     product.Barcode = reader["Barcode"].ToString();
-                    int.TryParse(reader["Id"].ToString(), out int resul);
-                    product.Id = resul;
+                    product.Id = (Guid)reader["Id"];
                 }
                 return product;
             }
@@ -51,8 +50,30 @@ namespace mejor_precio_3.Persistence
                     product.Name = reader["Name"].ToString();
                     product.Brand = reader["Brand"].ToString();
                     product.Barcode = barcode;
-                    int.TryParse(reader["Id"].ToString(), out int resul);
-                    product.Id = resul;
+                    product.Id = (Guid)reader["Id"];
+                }
+                return product;
+            }
+        }
+
+        public Product GetProductById(Guid id)
+        {
+
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                var command = new SqlCommand("SELECT * FROM Products WHERE Id = @id", conn);
+                command.Parameters.AddWithValue("@id", id);
+
+                var reader = command.ExecuteReader();
+
+                var product = new Product();
+                while (reader.Read())
+                {
+                    product.Name = reader["Name"].ToString();
+                    product.Brand = reader["Brand"].ToString();
+                    product.Barcode = reader["Barcode"].ToString();
+                    product.Id = id;
                 }
                 return product;
             }
@@ -77,10 +98,9 @@ namespace mejor_precio_3.Persistence
                 return list;
             }
         }
-        public List<PriceViewModel> GetTopFive(Product product)
+        public List<Price> GetTopFive(Product product)
         {
-            var geocoder = new Geocoder();
-            var list = new List<PriceViewModel>();
+            var list = new List<Price>();
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
@@ -90,19 +110,12 @@ namespace mejor_precio_3.Persistence
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    int.TryParse(reader["Id"].ToString(), out int id);
-                    decimal.TryParse(reader["Price"].ToString(), out decimal price);
-                    double.TryParse(reader["Latitude"].ToString(), out double lat);
-                    double.TryParse(reader["Longitude"].ToString(), out double longitude);
-
-                    var actualPrice = new PriceViewModel();
-                    actualPrice.latitude = lat;
-                    actualPrice.longitude = longitude;
-                    actualPrice.price = price;
-                    actualPrice.productName = product.Name;
-                    actualPrice.productBrand = product.Brand;
-                    actualPrice.productBarcode = product.Barcode;
-                    actualPrice.adress = geocoder.GetAdress(lat, longitude);
+                    var actualPrice = new Price();
+                    actualPrice.latitude = (double)reader["Latitude"];
+                    actualPrice.longitude = (double)reader["Longitude"];
+                    actualPrice.price = (decimal)reader["Price"];
+                    actualPrice.product = product;
+                    actualPrice.Id = (Guid)reader["Id"];
 
 
                     list.Add(actualPrice);
@@ -110,7 +123,7 @@ namespace mejor_precio_3.Persistence
                 return list;
             }
         }
-        public List<string> GetProductAutoComplete(string ProductName)
+        public List<string> GetAllNames(string ProductName)
         {
             var list = new List<string>();
             using (var conn = new SqlConnection(cString))
@@ -137,7 +150,7 @@ namespace mejor_precio_3.Persistence
                     new SqlParameter("@latitude", price.latitude),
                     new SqlParameter("@longitude", price.longitude),
                     new SqlParameter("@unitPrice", price.price),
-                    new SqlParameter("@idProduct", price.productId)
+                    new SqlParameter("@idProduct", price.product.Id)
                 };
 
             using (var conn = new SqlConnection(cString))
@@ -150,7 +163,7 @@ namespace mejor_precio_3.Persistence
                 }
                 else
                 {
-                    command = new SqlCommand("INSERT INTO Prices (Latitude,Longitude,Price,productId) VALUES (@latitude,@longitude, @unitPrice, @idProduct)", conn);
+                    command = new SqlCommand("INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (NEWID(),@latitude,@longitude, @unitPrice, @idProduct)", conn);
                 }
                 command.Parameters.AddRange(parameters.ToArray());
                 try
@@ -172,7 +185,7 @@ namespace mejor_precio_3.Persistence
             {
                 new SqlParameter("@latitude", price.latitude),
                 new SqlParameter("@longitude", price.longitude),
-                new SqlParameter("@idProduct", price.productId)
+                new SqlParameter("@idProduct", price.product.Id)
             };
             using (var conn = new SqlConnection(cString))
             {
@@ -192,7 +205,7 @@ namespace mejor_precio_3.Persistence
             }
         }
 
-        public void DeletePrice(int id)
+        public void DeletePrice(Guid id)
         {
             using (var conn = new SqlConnection(cString))
             {
@@ -216,17 +229,12 @@ namespace mejor_precio_3.Persistence
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    int.TryParse(reader["Id"].ToString(), out int id);
-                    decimal.TryParse(reader["Price"].ToString(), out decimal price);
-                    double.TryParse(reader["Latitude"].ToString(), out double lat);
-                    double.TryParse(reader["Longitude"].ToString(), out double longitude);
-                    int.TryParse(reader["productId"].ToString(),out int productId);
                     var actualPrice = new Price();
-                    actualPrice.productId = productId;
-                    actualPrice.latitude = lat;
-                    actualPrice.longitude = longitude;
-                    actualPrice.price = price;
-                    actualPrice.Id = id;
+                    actualPrice.product = this.GetProductById((Guid)reader["productId"]);
+                    actualPrice.latitude = (double)reader["Latitude"];
+                    actualPrice.longitude = (double)reader["Longitude"];
+                    actualPrice.price = (decimal)reader["Price"];
+                    actualPrice.Id = (Guid)reader["Id"];
 
 
                     list.Add(actualPrice);

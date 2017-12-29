@@ -1,18 +1,18 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MejorPrecio3.Models
 {
-    public class User
+    public class UserAdd
     {
         public string Name { get; set; }
         public string Mail { get; set; }
-
-        public string Password { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public String Password { get; set; }
         public int Age { get; set; }
         public char Gender { get; set; }
-        public Guid Id { get; set; }
-        public int Verified { get; set; }
-        public string Role { get; set; }
+
         
+        }
     }
-}
