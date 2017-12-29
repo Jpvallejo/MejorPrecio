@@ -1,15 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
-using System.Net;
-using System.Text.RegularExpressions;
-using mejor_precio_3.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using MejorPrecio3.Models;
 
-namespace mejor_precio_3.Persistence
+namespace MejorPrecio3.Persistence
 {
     public class UserPersistence
     {
@@ -17,9 +10,9 @@ namespace mejor_precio_3.Persistence
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
+                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=MejorPrecio3;Trusted_Connection=True";
                 conn.Open();
-                SqlCommand command = new SqlCommand("INSERT INTO Users ([Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (@name,@mail,@pass,@age,@gender,@verified,@role)", conn);
+                SqlCommand command = new SqlCommand("INSERT INTO Users ([Id],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),,@name,@mail,@pass,@age,@gender,@verified,@role)", conn);
                 command.Parameters.AddWithValue("@name", user.Name);
                 command.Parameters.AddWithValue("@mail", user.Mail);
                 command.Parameters.AddWithValue("@pass", user.Password);
@@ -35,7 +28,7 @@ namespace mejor_precio_3.Persistence
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
+                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=MejorPrecio3;Trusted_Connection=True";
                 conn.Open();
                 SqlCommand command = new SqlCommand("SELECT COUNT(*) as count FROM Users WHERE Mail='" + mail+"'", conn);
                 int dato1;
