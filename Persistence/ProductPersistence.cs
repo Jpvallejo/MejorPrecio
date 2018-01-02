@@ -15,23 +15,24 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT * FROM Products WHERE Name = @searchName", conn);
-                command.Parameters.AddWithValue("@searchName", name);
-
-                var reader = command.ExecuteReader();
-
-                var product = new Product();
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT * FROM Products WHERE Name = @searchName", conn))
                 {
-                    product.Name = reader["Name"].ToString();
-                    product.Brand = reader["Brand"].ToString();
-                    product.Barcode = reader["Barcode"].ToString();
-                    product.Id = (Guid)reader["Id"];
+                    command.Parameters.AddWithValue("@searchName", name);
+
+                    var reader = command.ExecuteReader();
+
+                    var product = new Product();
+                    while (reader.Read())
+                    {
+                        product.Name = reader["Name"].ToString();
+                        product.Brand = reader["Brand"].ToString();
+                        product.Barcode = reader["Barcode"].ToString();
+                        product.Id = (Guid)reader["Id"];
+                    }
+                    return product;
                 }
-                return product;
             }
         }
-
 
         public Product GetProductByBarcode(string barcode)
         {
@@ -39,20 +40,22 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT * FROM Products WHERE Barcode = @barcode", conn);
-                command.Parameters.AddWithValue("@barcode", barcode);
-
-                var reader = command.ExecuteReader();
-
-                var product = new Product();
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT * FROM Products WHERE Barcode = @barcode", conn))
                 {
-                    product.Name = reader["Name"].ToString();
-                    product.Brand = reader["Brand"].ToString();
-                    product.Barcode = barcode;
-                    product.Id = (Guid)reader["Id"];
+                    command.Parameters.AddWithValue("@barcode", barcode);
+
+                    var reader = command.ExecuteReader();
+
+                    var product = new Product();
+                    while (reader.Read())
+                    {
+                        product.Name = reader["Name"].ToString();
+                        product.Brand = reader["Brand"].ToString();
+                        product.Barcode = barcode;
+                        product.Id = (Guid)reader["Id"];
+                    }
+                    return product;
                 }
-                return product;
             }
         }
 
@@ -62,40 +65,50 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT * FROM Products WHERE Id = @id", conn);
-                command.Parameters.AddWithValue("@id", id);
-
-                var reader = command.ExecuteReader();
-
-                var product = new Product();
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT * FROM Products WHERE Id = @id", conn))
                 {
-                    product.Name = reader["Name"].ToString();
-                    product.Brand = reader["Brand"].ToString();
-                    product.Barcode = reader["Barcode"].ToString();
-                    product.Id = id;
+                    command.Parameters.AddWithValue("@id", id);
+
+                    var reader = command.ExecuteReader();
+
+                    var product = new Product();
+                    while (reader.Read())
+                    {
+                        product.Name = reader["Name"].ToString();
+                        product.Brand = reader["Brand"].ToString();
+                        product.Barcode = reader["Barcode"].ToString();
+                        product.Id = id;
+                    }
+                    return product;
                 }
-                return product;
             }
         }
 
 
 
-        public List<string> GetAllProductNames()
+        public List<Product> GetAllProducts()
         {
-            StringBuilder sb = new StringBuilder();
-            var list = new List<string>();
+            var list = new List<Product>();
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT Name FROM Products", conn);
-                var reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT * FROM Products", conn))
                 {
-                    list.Add(reader["Name"].ToString());
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var product = new Product()
+                        {
+                            Id = (Guid)reader["Id"],
+                            Name = reader["Name"].ToString(),
+                            Barcode = reader["Barcode"].ToString(),
+                            Brand = reader["Brand"].ToString()
+                        };
+                        list.Add(product);
+                    }
+                    return list;
                 }
-                return list;
             }
         }
         public List<Price> GetTopFive(Product product)
@@ -129,28 +142,37 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT Name FROM Products WHERE Name Like '%' + @searchName + '%' ORDER BY Name", conn);
-                command.Parameters.AddWithValue("@searchName", ProductName);
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT Name FROM Products WHERE Name Like '%' + @searchName + '%' ORDER BY Name", conn))
                 {
-                    list.Add(reader["Name"].ToString());
-                }
-                return list;
+                    command.Parameters.AddWithValue("@searchName", ProductName);
 
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add(reader["Name"].ToString());
+                    }
+                    return list;
+
+                }
             }
         }
 
         public bool SavePrice(Price price)
         {
+
+            if (price.Id == Guid.Empty)
+            {
+                price.Id = Guid.NewGuid();
+            }
+
             SqlCommand command = null;
             var parameters = new List<SqlParameter>()
                 {
                     new SqlParameter("@latitude", price.latitude),
                     new SqlParameter("@longitude", price.longitude),
                     new SqlParameter("@unitPrice", price.price),
-                    new SqlParameter("@idProduct", price.product.Id)
+                    new SqlParameter("@idProduct", price.product.Id),
+                    new SqlParameter("@id", price.Id)
                 };
 
             using (var conn = new SqlConnection(cString))
@@ -163,7 +185,7 @@ namespace MejorPrecio3.Persistence
                 }
                 else
                 {
-                    command = new SqlCommand("INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (NEWID(),@latitude,@longitude, @unitPrice, @idProduct)", conn);
+                    command = new SqlCommand("INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (@id,@latitude,@longitude, @unitPrice, @idProduct)", conn);
                 }
                 command.Parameters.AddRange(parameters.ToArray());
                 try
@@ -190,30 +212,33 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT * FROM Prices WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct", conn);
-                command.Parameters.AddRange(parameters.ToArray());
-
-                var reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                using (var command = new SqlCommand("SELECT * FROM Prices WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct", conn))
                 {
-                    return true;
+                    command.Parameters.AddRange(parameters.ToArray());
+
+                    var reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        return true;
+                    }
+
+                    return false;
+
                 }
-
-                return false;
-
             }
         }
-
         public void DeletePrice(Guid id)
         {
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("DELETE FROM Prices WHERE Id = @id", conn);
-                command.Parameters.AddWithValue("@id",id);
+                using (var command = new SqlCommand("DELETE FROM Prices WHERE Id = @id", conn))
+                {
+                    command.Parameters.AddWithValue("@id", id);
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -223,23 +248,109 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                var command = new SqlCommand("SELECT * FROM Prices", conn);
-
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var command = new SqlCommand("SELECT * FROM Prices", conn))
                 {
-                    var actualPrice = new Price();
-                    actualPrice.product = this.GetProductById((Guid)reader["productId"]);
-                    actualPrice.latitude = (double)reader["Latitude"];
-                    actualPrice.longitude = (double)reader["Longitude"];
-                    actualPrice.price = (decimal)reader["Price"];
-                    actualPrice.Id = (Guid)reader["Id"];
 
 
-                    list.Add(actualPrice);
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var actualPrice = new Price();
+                        actualPrice.product = this.GetProductById((Guid)reader["productId"]);
+                        actualPrice.latitude = (double)reader["Latitude"];
+                        actualPrice.longitude = (double)reader["Longitude"];
+                        actualPrice.price = (decimal)reader["Price"];
+                        actualPrice.Id = (Guid)reader["Id"];
+
+
+                        list.Add(actualPrice);
+                    }
+                    return list;
                 }
-                return list;
+            }
+        }
+
+
+
+
+        public bool SaveProduct(Product product)
+        {
+
+            if (product.Id == Guid.Empty)
+            {
+                product.Id = Guid.NewGuid();
+            }
+
+
+            var parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@name", product.Name),
+                    new SqlParameter("@barcode", product.Barcode),
+                    new SqlParameter("@brand", product.Brand),
+                    new SqlParameter("@id", product.Id)
+                };
+
+            if (this.ExistProduct(product))
+            {
+                return false;
+            }
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                var command = new SqlCommand("INSERT INTO Products (Id,Name,Barcode,Brand) VALUES (@id,@name,@barcode, @brand)", conn);
+                command.Parameters.AddRange(parameters.ToArray());
+                try
+                {
+                    command.ExecuteNonQuery();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+
+            }
+        }
+
+
+        public bool ExistProduct(Product product)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@name", product.Name),
+                new SqlParameter("@brand", product.Brand),
+                new SqlParameter("@barcode", product.Barcode)
+            };
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = new SqlCommand("SELECT * FROM Products WHERE Name = @name AND Barcode = @barcode AND Brand = @brand", conn))
+                {
+                    command.Parameters.AddRange(parameters.ToArray());
+
+                    var reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        public void DeleteProduct(Guid id)
+        {
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = new SqlCommand("DELETE FROM Products WHERE Id = @id", conn))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }

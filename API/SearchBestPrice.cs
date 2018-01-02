@@ -68,7 +68,7 @@ namespace MejorPrecio3.API
         }
 
 
-        public bool SaveProduct(Price price)
+        public bool SavePrice(Price price)
         {
             if (persistence.SavePrice(price))
             {
@@ -81,6 +81,10 @@ namespace MejorPrecio3.API
         public List<Price> GetAllPrices()
         {
             return persistence.GetAllPrices();
+        }
+        public List<Product> GetAllProducts()
+        {
+            return persistence.GetAllProducts();
         }
 
 
@@ -97,6 +101,23 @@ namespace MejorPrecio3.API
         public void DeletePrice(Guid id)
         {
             persistence.DeletePrice(id);
+        }
+
+
+
+        public bool SaveProduct(Product product)
+        {
+            if (persistence.SaveProduct(product))
+            {
+                return true;
+
+            }
+            return false;
+        }
+
+        public void DeleteProduct(Guid id)
+        {
+            persistence.DeleteProduct(id);
         }
     }
 }
