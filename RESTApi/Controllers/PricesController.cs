@@ -42,7 +42,8 @@ namespace MejorPrecio3.Controllers
                 price = model.price,
                 Id = Guid.Empty,
                 latitude = latlong.Item1,
-                longitude = latlong.Item2
+                longitude = latlong.Item2,
+                product = product
 
             };
             if (api.SavePrice(price))
