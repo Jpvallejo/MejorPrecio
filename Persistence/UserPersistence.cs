@@ -10,9 +10,9 @@ namespace MejorPrecio3.Persistence
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=MejorPrecio3;Trusted_Connection=True";
+                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
                 conn.Open();
-                SqlCommand command = new SqlCommand("INSERT INTO Users ([Id],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),,@name,@mail,@pass,@age,@gender,@verified,@role)", conn);
+                SqlCommand command = new SqlCommand("INSERT INTO Users ([Id],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),@name,@mail,@pass,@age,@gender,@verified,@role)", conn);
                 command.Parameters.AddWithValue("@name", user.Name);
                 command.Parameters.AddWithValue("@mail", user.Mail);
                 command.Parameters.AddWithValue("@pass", user.Password);
@@ -28,7 +28,7 @@ namespace MejorPrecio3.Persistence
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=MejorPrecio3;Trusted_Connection=True";
+                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
                 conn.Open();
                 SqlCommand command = new SqlCommand("SELECT COUNT(*) as count FROM Users WHERE Mail='" + mail+"'", conn);
                 int dato1;
