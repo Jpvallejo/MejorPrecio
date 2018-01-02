@@ -6,11 +6,12 @@ namespace MejorPrecio3.Persistence
 {
     public class UserPersistence
     {
+        string cString = System.IO.File.ReadAllText(System.Environment.GetEnvironmentVariable("Connectionstring")); //A cambiar cuando nos den el cstring de Azure
+
         public void Add(User user)
         {
-            using (SqlConnection conn = new SqlConnection())
+            using (SqlConnection conn = new SqlConnection(cString))
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
                 conn.Open();
                 SqlCommand command = new SqlCommand("INSERT INTO Users ([Id],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),@name,@mail,@pass,@age,@gender,@verified,@role)", conn);
                 command.Parameters.AddWithValue("@name", user.Name);
@@ -26,9 +27,8 @@ namespace MejorPrecio3.Persistence
         }
         public bool Exist(string mail)
         {
-            using (SqlConnection conn = new SqlConnection())
+            using (SqlConnection conn = new SqlConnection(cString))
             {
-                conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
                 conn.Open();
                 SqlCommand command = new SqlCommand("SELECT COUNT(*) as count FROM Users WHERE Mail='" + mail+"'", conn);
                 int dato1;
