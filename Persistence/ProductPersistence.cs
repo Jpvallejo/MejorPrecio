@@ -8,7 +8,7 @@ namespace MejorPrecio3.Persistence
 {
     public class ProductPersistence
     {
-        string cString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MejorPrecio3;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"; //A cambiar cuando nos den el cstring de Azure
+        string cString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True;"; //A cambiar cuando nos den el cstring de Azure
         public Product GetProductByName(string name)
         {
 

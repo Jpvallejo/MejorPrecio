@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MejorPrecio3.Models;
 using MejorPrecio3.Persistence;
@@ -35,6 +36,28 @@ namespace MejorPrecio3.API
 
         public void CreateUser(User user)
         {
+            var pass = user.Password;
+            try
+            {
+                pass = user.Password;
+                Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
+
+                if (!pat.IsMatch(user.Password))
+                    throw new Exception("Error en la contrasena +8, Mayus,Minus,numero");
+                Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
+                if (!regex.IsMatch(user.Mail))
+                    throw new Exception("Error en el mail");
+                byte[] data = System.Text.Encoding.ASCII.GetBytes(user.Password);
+                data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+                user.Password = System.Text.Encoding.ASCII.GetString(data);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+
+
             new UserPersistence().Add(user);
         }
         public bool Exist(string mail)
