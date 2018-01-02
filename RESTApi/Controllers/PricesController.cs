@@ -54,7 +54,7 @@ namespace MejorPrecio3.Controllers
             return StatusCode(500);
         }
         // [Authorize(Roles = "admin")]
-        [Route("Delete")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;

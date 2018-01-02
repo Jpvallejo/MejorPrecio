@@ -27,6 +27,7 @@ namespace MejorPrecio3.Controllers
         [HttpPost]
         public ActionResult Create([FromBody]Product product)
         {
+            product.Id = Guid.Empty;
             if (api.SaveProduct(product))
             {
                 return StatusCode(204);
@@ -36,8 +37,7 @@ namespace MejorPrecio3.Controllers
             return StatusCode(500);
         }
         // [Authorize(Roles = "admin")]
-        [Route("Delete")]
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;

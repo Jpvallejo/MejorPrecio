@@ -8,7 +8,7 @@ namespace MejorPrecio3.Persistence
 {
     public class ProductPersistence
     {
-        string cString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True;"; //A cambiar cuando nos den el cstring de Azure
+        string cString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Mejor_Precios_3;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;"; //A cambiar cuando nos den el cstring de Azure
         public Product GetProductByName(string name)
         {
 
@@ -164,8 +164,6 @@ namespace MejorPrecio3.Persistence
             {
                 price.Id = Guid.NewGuid();
             }
-
-            SqlCommand command = null;
             var parameters = new List<SqlParameter>()
                 {
                     new SqlParameter("@latitude", price.latitude),
@@ -178,26 +176,20 @@ namespace MejorPrecio3.Persistence
             using (var conn = new SqlConnection(cString))
             {
                 conn.Open();
-                if (this.ExistPrice(price))
+                using (var command = new SqlCommand("INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (@id,@latitude,@longitude, @unitPrice, @idProduct)", conn))
                 {
-                    command = new SqlCommand("UPDATE Prices SET Price = @unitPrice WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct", conn);
 
+                    command.Parameters.AddRange(parameters.ToArray());
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
                 }
-                else
-                {
-                    command = new SqlCommand("INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (@id,@latitude,@longitude, @unitPrice, @idProduct)", conn);
-                }
-                command.Parameters.AddRange(parameters.ToArray());
-                try
-                {
-                    command.ExecuteNonQuery();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-
             }
         }
 
@@ -228,6 +220,37 @@ namespace MejorPrecio3.Persistence
                 }
             }
         }
+
+
+        public bool UpdatePrice(Price price)
+        {
+            var parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@latitude", price.latitude),
+                    new SqlParameter("@longitude", price.longitude),
+                    new SqlParameter("@unitPrice", price.price),
+                    new SqlParameter("@idProduct", price.product.Id)
+                };
+            using (var conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = new SqlCommand("UPDATE Prices SET Price = @unitPrice WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct", conn))
+                {
+                    command.Parameters.AddRange(parameters.ToArray());
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                }
+            }
+        }
+
         public void DeletePrice(Guid id)
         {
             using (var conn = new SqlConnection(cString))
