@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using MejorPrecio3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -12,39 +12,22 @@ namespace MejorPrecio3.Controllers
     [Route("Products")]
     public class ProductsController : Controller
     {
+
         private SearchBestPrice api = new SearchBestPrice();
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return Json(api.GetAllPrices());
+            return Json(api.GetAllProducts());
         }
 
-        [Route("List")]
-        public JsonResult List(string Prefix)
-        {
-            var model = new ProductViewModel();
-            var prodlist = api.GetSimilarNames(Prefix)
-                .Select(s => new { Name = s });
-
-            return Json(prodlist);
-        }
 
         //[Authorize]
         [Route("")]
         [HttpPost]
-        public ActionResult Create([FromBody]ProductViewModel model)
+        public ActionResult Create([FromBody]Product product)
         {
-            var geocoder = new Geocoder();
-            var latlong = geocoder.GetLatLong(model.location);
-            var product = api.GetProductByName(model.selectedProduct);
-            var price = new Price (){
-                price = model.price,
-                Id = Guid.Empty,
-                latitude = latlong.Item1,
-                longitude = latlong.Item2
-
-            };
-            if(api.SaveProduct(price))
+            if (api.SaveProduct(product))
             {
                 return StatusCode(204);
 
@@ -52,42 +35,15 @@ namespace MejorPrecio3.Controllers
 
             return StatusCode(500);
         }
-       // [Authorize(Roles = "admin")]
+        // [Authorize(Roles = "admin")]
         [Route("Delete")]
+        [HttpDelete]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;
-            api.DeletePrice(id);
+            api.DeleteProduct(id);
             return Content("Product deleted successfully");
         }
-
-        [Route("searchByBarcode")]
-        [HttpGet("{barcode}")]
-        public IActionResult SearchWithBarcode(string barcode)
-        {
-            
-            var result = api.SearchProductBarcode(barcode);
-
-            return Json(result);
-        }
-        [Route("searchByName")]
-        [HttpGet("{name}")]
-        public IActionResult SearchWithName(string name)
-        {
-            var result = api.SearchProductName(name);
-            return Json(result);
-        }
-
-        [Route("BarcodeUploading")]
-        [HttpPost]
-        public IActionResult BarcodeUploading(IFormFile file)
-        {
-            var barcodeService = new BarcodeService();
-            var barcode = barcodeService.GetBarcode(file);
-
-            return Content(barcode); 
-        }
-
 
     }
 }
