@@ -70,12 +70,14 @@ namespace MejorPrecio3.API
 
         public bool SavePrice(Price price)
         {
-            if (persistence.SavePrice(price))
+            if (persistence.ExistPrice(price))
             {
-                return true;
-
+                return persistence.UpdatePrice(price);
             }
-            return false;
+            else
+            {
+                return persistence.SavePrice(price);
+            }
         }
 
         public List<Price> GetAllPrices()
