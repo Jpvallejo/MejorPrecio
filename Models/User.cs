@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace MejorPrecio3.Models
 {
@@ -13,6 +14,7 @@ namespace MejorPrecio3.Models
         public Guid Id { get; set; }
         public int Verified { get; set; }
         public string Role { get; set; }
+        public Queue Hisory { get; set; }
         
     }
 }
