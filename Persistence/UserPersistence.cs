@@ -70,11 +70,10 @@ namespace MejorPrecio3.Persistence
                 conn.Close();
             }
         }
-        public Queue GetHisoty(Guid IdUser)
+        public Queue GetHistory(Guid IdUser)
         {
-            using (SqlConnection Conn = new SqlConnection())
+            using (SqlConnection Conn = new SqlConnection(cString))
             {
-                Conn.ConnectionString = @"Server=localhost\SQLEXPRESS;Database=Mejor_Precio_3;Trusted_Connection=True";
                 Conn.Open();
                 SqlCommand command = new SqlCommand("SELECT SearchHistory FROM Users WHERE Id=@ID", Conn);
                 string[] dato1;
