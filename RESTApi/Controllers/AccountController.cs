@@ -62,8 +62,9 @@ namespace MejorPrecio3.Controllers
             return Content("");
         }
 
-        [HttpGet("GetHistory")]
-        public IActionResult GetHistory([FromBody] Guid userId)
+        [Route("GetHistory")]
+        [HttpGet("{userId}")]
+        public IActionResult GetHistory(Guid userId)
         {
             try{
                 var searchHistroy = Json(api.GetSearchHistory(userId));
