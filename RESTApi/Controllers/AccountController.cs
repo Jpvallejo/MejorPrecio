@@ -75,7 +75,7 @@ namespace MejorPrecio3.Controllers
             return StatusCode(200, searchHistory);
         }
 
-        [HttpPut("ActualizarHistorial")]
+        [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
         {
             try{
