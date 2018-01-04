@@ -61,16 +61,32 @@ namespace MejorPrecio3.Controllers
         {
             return Content("");
         }
-        public IActionResult GetHistory(string Email)
-        {
 
-            return Content("");
+        [Route("GetHistory")]
+        [HttpGet("{userId}")]
+        public IActionResult GetHistory(Guid userId)
+        {
+            try{
+                var searchHistroy = Json(api.GetSearchHistory(userId));
+            }
+
+            catch (Exception e){
+                return StatusCode(412,e.Message);
+            }
+            return StatusCode(200, searchHistory);
         }
-        [HttpPut("ActualizarHistorial")]
-        public IActionResult UpdateHistory(string Email, string ProductoBuscado)
-        {
 
-            return Content("");
+        [HttpPatch("ActualizarHistorial")]
+        public IActionResult UpdateHistory([FromBody]User user)
+        {
+            try{
+                api.UpdateSearchHistory(user);
+            }
+
+            catch (Exception e){
+                return StatusCode(400, e.Message);
+            }
+            return StatusCode(200);
         }
 
     }
