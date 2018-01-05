@@ -1,19 +1,15 @@
+using System.Collections.Generic;
+
 namespace MejorPrecio3.Models
 {
     public class PriceViewModel
     {
-        public string productName {get; set;}
+        public List<string> ProductsNames {get;set;}
 
-        public string productBarcode {get; set;}
+        public string selectedProduct {get; set;}
+        public decimal price{get; set;}
 
-        public string productBrand {get; set;}
-
-        public double latitude {get; set;}
-
-        public double longitude {get; set;}
-
-        public string adress {get; set;}
+        public string location {get; set;}
         
-        public decimal price {get; set;}
     }
 }
