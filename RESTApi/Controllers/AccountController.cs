@@ -67,13 +67,13 @@ namespace MejorPrecio3.Controllers
         public IActionResult GetHistory(Guid userId)
         {
             try{
-                var searchHistroy = Json(api.GetSearchHistory(userId));
+                var searchHistory = api.GetSearchHistory(userId);
+                return Json(searchHistory);
             }
 
             catch (Exception e){
                 return StatusCode(412,e.Message);
             }
-            return StatusCode(200, searchHistory);
         }
 
         [HttpPatch("ActualizarHistorial")]
