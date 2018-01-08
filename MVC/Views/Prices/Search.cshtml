@@ -38,6 +38,9 @@
     function Initialize() { 
  
         var data = @Html.Raw(Json.Serialize(Model));
+        if(data.length == 0){
+            alert("Producto No Encontrado ");
+        }
         // Google has tweaked their interface somewhat - this tells the api to use that new UI 
         google.maps.visualRefresh = true; 
         var BsAs = new google.maps.LatLng(-34.603722, -58.381592); 
@@ -48,11 +51,11 @@
             center: BsAs, 
             mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP,
             zoomControl: true,
-  mapTypeControl: true,
-  scaleControl: true,
-  streetViewControl: true,
-  rotateControl: true,
-  fullscreenControl: true
+            mapTypeControl: true,
+            scaleControl: true,
+            streetViewControl: true,
+            rotateControl: true,
+            fullscreenControl: true
         }; 
  
         // This makes the div with id "map_canvas" a google map 
