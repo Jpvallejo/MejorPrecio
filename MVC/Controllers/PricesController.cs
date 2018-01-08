@@ -47,13 +47,12 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("Create")]
         public IActionResult Create()
         {
-            PriceViewModel model= null;
+            var model= new PriceViewModel();
             return View(model);
         }
         //[Authorize]
-        [Route("")]
         [HttpPost]
-        public ActionResult Create([FromBody]PriceViewModel model)
+        public ActionResult Create(PriceViewModel model)
         {
             var geocoder = new Geocoder();
             var latlong = geocoder.GetLatLong(model.location);
@@ -69,11 +68,11 @@ namespace MejorPrecio3.MVC.Controllers
             };
             if (api.SavePrice(price))
             {
-                return StatusCode(204);
+                return RedirectToAction("Index","");
 
             }
 
-            return StatusCode(500);
+            return View("Error");
         }
         // [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]

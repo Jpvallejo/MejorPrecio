@@ -15,7 +15,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-            @using (Html.BeginForm("", "Products", FormMethod.Post))
+            @using (Html.BeginForm("", "Prices", FormMethod.Post))
             {
         
        <div>
@@ -55,7 +55,7 @@
 <script>
 var options = {
   url: function(phrase) {
-    return "/Products/list?Prefix=" + phrase ;
+    return "/Prices/list?Prefix=" + phrase ;
   },
 
   getValue: "name",
