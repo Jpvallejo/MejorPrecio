@@ -95,7 +95,7 @@ namespace MejorPrecio3.API
             return persistence.GetProductByName(name);
         }
 
-        public IEnumerable<string> GetSimilarNames(string name)
+        public List<string> GetSimilarNames(string name)
         {
             return persistence.GetAllNames(name);
         }
