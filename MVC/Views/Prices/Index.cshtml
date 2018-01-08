@@ -1,4 +1,4 @@
-@model IEnumerable<mejor_precio_3.Models.Price>
+@model IEnumerable<MejorPrecio3.Models.Price>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,7 +10,13 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.productId)
+                    @Html.DisplayNameFor(model => model.product.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.product.Brand)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.product.Barcode)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.price)
@@ -28,7 +34,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.productId)
+                @Html.DisplayFor(modelItem => item.product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.Barcode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.price)

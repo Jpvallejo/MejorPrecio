@@ -3,11 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - mejor_precio_3</title>
+    <title>@ViewData["Title"] - Mejor Precio</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+    <!-- JS file -->
+<script src="path/to/jquery.easy-autocomplete.min.js"></script> 
+
+<!-- CSS file -->
+<link rel="stylesheet" href="path/to/easy-autocomplete.min.css"> 
+
+<!-- Additional CSS Themes file - not required-->
+<link rel="stylesheet" href="path/to/easy-autocomplete.themes.min.css"> 
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -22,7 +30,7 @@
         <div class="container">
             <div class="navbar-header">
                     <a style = "float:left;margin-top:10px;margin-right:20px">
-                        @using (Html.BeginForm("Create", "Products", FormMethod.Get))
+                        @using (Html.BeginForm("Create", "Prices", FormMethod.Get))
                             {
                                 <button class="btn btn-primary" type = "submit"> +</button>
                             }    
@@ -33,7 +41,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">mejor_precio_3</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Mejor Precio</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -42,7 +50,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li>
                     
-                    <form class="form-inline" action="/Home/SearchWithName">
+                    <form class="form-inline" action="/Prices/searchByName">
                         <div class = "form-group">
                         <input placeholder="Search a product" style="margin-top:10px;width:100%;float:left"  id="provider-remoteee" name="name"/>
                         </div>
@@ -52,17 +60,14 @@
                     </li>
                     
                     </ul>
-                    <ul style = "float:right;">
+                <ul style = "float:right;">
     
-                        @using (Html.BeginForm("BarcodeUploading", "Products", FormMethod.Post, 
+                        @using (Html.BeginForm("BarcodeUploading", "Prices", FormMethod.Post, 
                                                         new { enctype = "multipart/form-data" }))
                             {  
-                                
-                                <div class="file-upload">
-    <p for="upload" class="file-upload__label">Buscar por Codigo de Barras</p>
-                                <input  class="file-upload__input" type="file" name="file" id="file" style="width: 100%; border-radius:3px; color:antiquewhite" />
-                                </div>
-                                <button type="submit"  class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar</button> 
+                                <input type="file" name="file" id="selectedFile" style="display:none;" />
+                                <input type = "button"  class="btn" value="Cargar Foto" onclick="document.getElementById('selectedFile').click();" />
+                                <button type="submit"  class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar por Codigo de Barras</button>
                             }
 
                 </ul>
@@ -72,7 +77,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - mejor_precio_3</p>
+            <p>&copy; 2018 - Mejor Precio 3</p>
         </footer>
     </div>
 
@@ -82,12 +87,6 @@
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="~/js/jquery.easy-autocomplete.min.js"></script> 
-
-<!-- CSS file -->
-        <link rel="stylesheet" href="~/js/easy-autocomplete.min.css"> 
-
-<!-- Additional CSS Themes file - not required-->
-        <link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css"> 
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -109,10 +108,10 @@
 </body>
 
 
-        <script >
+        <script>
             var options = {
   url: function(phrase) {
-    return "/Products/list?Prefix=" + phrase ;
+    return "/Prices/list?Prefix=" + phrase ;
   },
 
   getValue: "name",
