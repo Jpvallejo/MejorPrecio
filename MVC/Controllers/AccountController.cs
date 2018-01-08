@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MejorPrecio3.Models;
 using MejorPrecio3.API;
 using System.Text.RegularExpressions;
+using MejorPrecio3.MVC.Models;
 
-namespace MejorPrecio3.Controllers
+namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Account")]
     public class AccountController : Controller
@@ -67,13 +68,13 @@ namespace MejorPrecio3.Controllers
         public IActionResult GetHistory(Guid userId)
         {
             try{
-                var searchHistroy = Json(api.GetSearchHistory(userId));
+                var searchHistory = Json(api.GetSearchHistory(userId));
+            return StatusCode(200, searchHistory);
             }
 
             catch (Exception e){
                 return StatusCode(412,e.Message);
             }
-            return StatusCode(200, searchHistory);
         }
 
         [HttpPatch("ActualizarHistorial")]

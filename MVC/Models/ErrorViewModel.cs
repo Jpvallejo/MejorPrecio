@@ -1,6 +1,6 @@
 using System;
 
-namespace MVC.Models
+namespace MejorPrecio3.MVC.Models
 {
     public class ErrorViewModel
     {

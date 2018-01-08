@@ -6,29 +6,50 @@ using MejorPrecio3.API;
 using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
+using MejorPrecio3.MVC.Models;
 
-namespace MejorPrecio3.Controllers
+namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Prices")]
     public class PricesController : Controller
     {
         private SearchBestPrice api = new SearchBestPrice();
 
-        public IActionResult Index()
+
+        private SearchViewModel Translate(Price p)
         {
-            return Json(api.GetAllPrices());
+            return new SearchViewModel()
+            {
+                price = p.price,
+                productName = p.product.Name,
+                productBrand = p.product.Brand,
+                productBarcode = p.product.Barcode,
+                latitude = p.latitude,
+                longitude = p.longitude,
+                adress = new Geocoder().GetAdress(p.latitude, p.longitude)
+            };
         }
 
+        public IActionResult Index()
+        {
+            return View(api.GetAllPrices());
+        }
+        
         [Route("List")]
         public JsonResult List(string Prefix)
         {
-            var model = new PriceViewModel();
             var prodlist = api.GetSimilarNames(Prefix)
                 .Select(s => new { Name = s });
 
             return Json(prodlist);
         }
 
+        [HttpGet("Create")]
+        public IActionResult Create()
+        {
+            PriceViewModel model= null;
+            return View(model);
+        }
         //[Authorize]
         [Route("")]
         [HttpPost]
@@ -68,16 +89,16 @@ namespace MejorPrecio3.Controllers
         public IActionResult SearchWithBarcode(string barcode)
         {
 
-            var result = api.SearchProductBarcode(barcode);
+            var result = api.SearchProductBarcode(barcode).Select(Translate);
 
-            return Json(result);
+            return View("Search", result);
         }
         [Route("searchByName")]
         [HttpGet("{name}")]
         public IActionResult SearchWithName(string name)
         {
-            var result = api.SearchProductName(name);
-            return Json(result);
+            var result = api.SearchProductName(name).Select(Translate);
+            return View("search", result);
         }
 
         [Route("BarcodeUploading")]
@@ -87,7 +108,7 @@ namespace MejorPrecio3.Controllers
             var barcodeService = new BarcodeService();
             var barcode = barcodeService.GetBarcode(file);
 
-            return Content(barcode);
+            return RedirectToAction("SearchWithBarcode", "Prices", new { barcode = barcode });
         }
 
 

@@ -1,13 +1,9 @@
-using System.Linq;
 using MejorPrecio3.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using MejorPrecio3.API;
 using System;
-using MejorPrecio3.API.Services;
-using MejorPrecio3.Services;
 
-namespace MejorPrecio3.Controllers
+namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Products")]
     public class ProductsController : Controller

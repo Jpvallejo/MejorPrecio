@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Models;
+using MejorPrecio3.MVC.Models;
 
-namespace MVC.Controllers
+namespace MejorPrecio3.MVC.Controllers
 {
     public class HomeController : Controller
     {
