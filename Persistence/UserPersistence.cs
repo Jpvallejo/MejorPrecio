@@ -8,7 +8,7 @@ namespace MejorPrecio3.Persistence
 {
     public class UserPersistence
     {
-        string cString = System.IO.File.ReadAllText(System.Environment.GetEnvironmentVariable("Connectionstring")); //A cambiar cuando nos den el cstring de Azure
+        string cString = System.Environment.GetEnvironmentVariable("Connectionstring"); //A cambiar cuando nos den el cstring de Azure
 
         public void Add(User user)
         {

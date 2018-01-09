@@ -4,17 +4,27 @@ using MejorPrecio3.Models;
 using MejorPrecio3.API;
 using System.Text.RegularExpressions;
 using MejorPrecio3.MVC.Models;
+using System.Collections.Generic;
 
 namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Account")]
     public class AccountController : Controller
     {
-
         SearchBestPrice api = new SearchBestPrice();
 
+        [HttpGet("Register")]
+        public IActionResult Register()
+        {
+            var model = new UserAdd();
+            return View(model);
+        }
+
+
+
+
         [HttpPost]
-        public IActionResult Post([FromBody] UserAdd userAdd)
+        public IActionResult Post( UserAdd userAdd)
         {
 
             User user = new User()
@@ -63,13 +73,25 @@ namespace MejorPrecio3.MVC.Controllers
             return Content("");
         }
 
-        [Route("GetHistory")]
-        [HttpGet("{userId}")]
+        //[Route("history")]
+        [HttpGet("history/{userId}")]
         public IActionResult GetHistory(Guid userId)
         {
             try{
-                var searchHistory = Json(api.GetSearchHistory(userId));
-            return StatusCode(200, searchHistory);
+                var searchHistory = api.GetSearchHistory(userId);
+                List<HistoryViewModel> model = new List<HistoryViewModel>();
+                int i=1;
+                foreach(var search in searchHistory)
+                {
+                    var historyModel = new HistoryViewModel()
+                    {
+                        position = i,
+                        name = search
+                    };
+                    i++;
+                    model.Add(historyModel);
+                }
+            return View(model);
             }
 
             catch (Exception e){
