@@ -14,14 +14,20 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return Json(api.GetAllProducts());
+            return View(api.GetAllProducts());
         }
 
+
+        [HttpGet("Create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         //[Authorize]
         [Route("")]
         [HttpPost]
-        public ActionResult Create([FromBody]Product product)
+        public ActionResult Create(Product product)
         {
             product.Id = Guid.Empty;
             if (api.SaveProduct(product))
@@ -33,7 +39,7 @@ namespace MejorPrecio3.MVC.Controllers
             return StatusCode(500);
         }
         // [Authorize(Roles = "admin")]
-        [HttpDelete("{id}")]
+        [Route("{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;
