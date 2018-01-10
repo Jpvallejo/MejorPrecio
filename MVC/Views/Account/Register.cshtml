@@ -1,0 +1,42 @@
+@model MejorPrecio3.MVC.Models.UserAdd
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+            @using (Html.BeginForm("", "Account", FormMethod.Post))
+            {
+        
+            <div>    
+                <label asp-for="Name" class="control-label">Nombre y Apellido</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Mail" class="control-label">Mail</label>
+                 <input asp-for="Mail" class="form-control" type="email"></input>
+                <span asp-validation-for="Mail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">Contraseña</label>
+                 <input asp-for="Password" class="form-control" type="password"></input>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label">Edad</label>
+                 <input asp-for="Age" class="form-control" type="number"></input>
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label">Sexo</label>
+                <select asp-for="Gender" class="form-control">
+                    <option disabled selected value=""> </option>
+                    <option value="M">Hombre</option> 
+                    <option value="F">Mujer</option>
+                    <option value="O">Otro</option> 
+                </select> 
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <input type="submit" value="Registrarse" />
+            }
+    </div>
+</div>
