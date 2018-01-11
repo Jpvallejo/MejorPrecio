@@ -9,52 +9,53 @@
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.product.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.product.Brand)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.product.Barcode)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.latitude)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.longitude)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.product.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.product.Brand)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.product.Barcode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.longitude)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.product.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.product.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.product.Barcode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-                        <td>
-                @Html.DisplayFor(modelItem => item.latitude)
-            </td>
-                        <td>
-                @Html.DisplayFor(modelItem => item.longitude)
-            </td>
-            <td>
-                <a method="delete" data-confirm="Are you sure?" asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.Brand)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.Barcode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.latitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.longitude)
+                </td>
+                <td>
+                    <a method="delete" data-confirm="Are you sure?" asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
