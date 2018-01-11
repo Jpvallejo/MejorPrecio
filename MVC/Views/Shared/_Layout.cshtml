@@ -8,15 +8,15 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-    <!-- JS file -->
-        <script src="path/to/jquery.easy-autocomplete.min.js"></script> 
+        <!-- JS file -->
+        <script src="path/to/jquery.easy-autocomplete.min.js"></script>
 
-<!-- CSS file -->
-        <link rel="stylesheet" href="path/to/easy-autocomplete.min.css"> 
+        <!-- CSS file -->
+        <link rel="stylesheet" href="path/to/easy-autocomplete.min.css">
 
-<!-- Additional CSS Themes file - not required-->
-        <link rel="stylesheet" href="path/to/easy-autocomplete.themes.min.css"> 
-        
+        <!-- Additional CSS Themes file - not required-->
+        <link rel="stylesheet" href="path/to/easy-autocomplete.themes.min.css">
+
         <script src="https://use.fontawesome.com/79eb78ce25.js"></script>
 
     </environment>
@@ -32,12 +32,12 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                    <a style = "float:left;margin-top:10px;margin-right:20px">
-                        @using (Html.BeginForm("Create", "Prices", FormMethod.Get))
-                            {
-                                <button class="btn btn-primary" type = "submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                            }    
-                    </a>
+                <a style="float:left;margin-top:10px;margin-right:20px">
+                    @using (Html.BeginForm("Create", "Prices", FormMethod.Get))
+                    {
+                        <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    }
+                </a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -51,30 +51,39 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>
                     <li>
-                    
-                    <form class="form-inline" action="/Prices/searchByName">
-                        <div class = "form-group">
-                        <input placeholder="Search a product" id="provider-remoteee" name="name"/>
-                        </div>
-                        <button class ="btn btn-primary" style = "margin-top:10px" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </form>
-                    
-                    </li>
-                    
-                    </ul>
-                <ul style = "float:right;">
-    
-                        @using (Html.BeginForm("BarcodeUploading", "Prices", FormMethod.Post, 
-                                                        new { enctype = "multipart/form-data" }))
-                            {  
-                                <input type="file" name="file" id="selectedFile" style="display:none;" />
-                                <input id="upload" type = "button"  class="btn" value="&#xf030;" onclick="document.getElementById('selectedFile').click();" />
-                                <button type="submit"  class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar por Codigo de Barras</button>
-                            }
 
+                        <form class="navbar-form" action="/Prices/searchByName">
+
+                            <div id="custom-search-input">
+                                <div class="input-group col-md-12">
+                                    <input name="name" type="text" id="search-box" class="search-query form-control" placeholder="Search" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class=" fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </li>
+
+                    <li style="">
+
+                        <form class="navbar-form" action="/Prices/BarcodeUploading" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="file" id="selectedFile" style="display:none;" />
+                            <input id="upload" type="button" class="btn" value="&#xf030;" onclick="document.getElementById('selectedFile').click();" />
+                            <button type="submit" class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar por Codigo de Barras</button>
+                        </form>
+
+
+                    </li>
                 </ul>
-        </div>
+            </div>
     </nav>
     <div class="container body-content">
         @RenderBody()
@@ -86,18 +95,18 @@
 
     <environment include="Development">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="~/js/jquery.easy-autocomplete.min.js"></script> 
+        <script src="~/js/jquery.easy-autocomplete.min.js"></script>
 
-<!-- CSS file -->
-        <link rel="stylesheet" href="~/js/easy-autocomplete.min.css"> 
+        <!-- CSS file -->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.min.css">
 
-<!-- Additional CSS Themes file - not required-->
-        <link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css"> 
+        <!-- Additional CSS Themes file - not required-->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="~/js/jquery.easy-autocomplete.min.js"></script> 
+        <script src="~/js/jquery.easy-autocomplete.min.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -115,44 +124,44 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    
+
 </body>
 
 
 <script>
-var options = {
-    url: function(phrase) {
-        return "/Prices/list?Prefix=" + phrase ;
+    var options = {
+        url: function (phrase) {
+            return "/Prices/list?Prefix=" + phrase;
         },
-    getValue: "name",
-    list: {
-		match: {
-			enabled: true
-		},
-        sort: {
-            enabled: true
+        getValue: "name",
+        list: {
+            match: {
+                enabled: true
+            },
+            sort: {
+                enabled: true
+            },
+            maxNumberOfElements: 8
         },
-		maxNumberOfElements: 8
-	},
 
-	theme: "plate-dark",
-    minLenght:4
-};
+        theme: "plate-dark",
+        minLenght: 4
+    };
 
-$("#provider-remoteee").easyAutocomplete(options);
+    $("#search-box").easyAutocomplete(options);
 </script>
 
 <style>
-    .btn{
+    .btn {
         background-color: white;
-        color:#222;
+        color: #222;
     }
 
-#upload{
-    font-family: FontAwesome;
-}
+    #upload {
+        font-family: FontAwesome;
+    }
 </style>
-    
-    @RenderSection("Scripts", required: false)
+
+@RenderSection("Scripts", required: false)
 
 </html>
