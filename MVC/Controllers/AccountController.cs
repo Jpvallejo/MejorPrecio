@@ -64,13 +64,36 @@ namespace MejorPrecio3.MVC.Controllers
 
             return Content("");
         }
-        public IActionResult Login([FromBody] UserAdd user)
+        [HttpGet("Login")]
+        public IActionResult Login()
         {
-            return Content("");
+            var model = new LoginViewModel();
+            return View(model);
         }
-        public IActionResult LogOff([FromBody] UserAdd user)
+
+
+        [HttpPost("Login")]
+        public IActionResult Login(UserAdd user)
         {
-            return Content("");
+            return StatusCode(501);
+        }
+
+        [HttpPost]
+        public IActionResult LogOff(UserAdd user)
+        {
+            return StatusCode(501);
+        }
+
+        [HttpGet("RecoveryPassword")]
+        public IActionResult RecoveryPassword()
+        {
+            return View();
+        }
+
+        [HttpPost("RecoveryPassword")]
+        public IActionResult RecoveryPassword(string email)
+        {
+            return StatusCode(501);
         }
 
         //[Route("history")]
