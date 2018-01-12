@@ -78,7 +78,7 @@ namespace MejorPrecio3.MVC.Controllers
             return StatusCode(501);
         }
 
-        [HttpPost]
+        [HttpPost("LogOff")]
         public IActionResult LogOff(UserAdd user)
         {
             return StatusCode(501);
