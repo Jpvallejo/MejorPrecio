@@ -11,6 +11,7 @@ namespace MejorPrecio3.API
     public class SearchBestPrice
     {
         private static ProductPersistence persistence = new ProductPersistence();
+        
         //This function searches products on a productList by their name and returns
         //all products with that name on another list
         public List<Price> SearchProductName(string productName)
@@ -33,20 +34,19 @@ namespace MejorPrecio3.API
             return productList;
         }
 
-
         public void CreateUser(User user)
         {
             var pass = user.Password;
             try
             {
-                pass = user.Password;
                 Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
-
                 if (!pat.IsMatch(user.Password))
                     throw new Exception("Error en la contrasena +8, Mayus,Minus,numero");
+
                 Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
                 if (!regex.IsMatch(user.Mail))
                     throw new Exception("Error en el mail");
+
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(user.Password);
                 data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
                 user.Password = System.Text.Encoding.ASCII.GetString(data);
@@ -56,17 +56,15 @@ namespace MejorPrecio3.API
                 throw new Exception(e.Message);
             }
 
-
-
             new UserPersistence().Add(user);
         }
+
         public bool Exist(string mail)
         {
             UserPersistence up = new UserPersistence();
             bool exist = up.Exist(mail);
             return exist;
         }
-
 
         public bool SavePrice(Price price)
         {
@@ -84,11 +82,11 @@ namespace MejorPrecio3.API
         {
             return persistence.GetAllPrices();
         }
+
         public List<Product> GetAllProducts()
         {
             return persistence.GetAllProducts();
         }
-
 
         public Product GetProductByName(string name)
         {
@@ -105,14 +103,11 @@ namespace MejorPrecio3.API
             persistence.DeletePrice(id);
         }
 
-
-
         public bool SaveProduct(Product product)
         {
             if (persistence.SaveProduct(product))
             {
                 return true;
-
             }
             return false;
         }
@@ -121,8 +116,6 @@ namespace MejorPrecio3.API
         {
             persistence.DeleteProduct(id);
         }
-
-
 
         public void UpdateSearchHistory(User user)
         {

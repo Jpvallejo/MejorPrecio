@@ -32,6 +32,36 @@ namespace MejorPrecio3.Persistence
                 }
             }
         }
+
+        public bool Login(string mail, string password)
+        {
+            using(SqlConnection conn = new SqlConnection(cString))
+            {
+                int dato1;
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT COUNT(*) as count FROM Users WHERE Mail= @mail and Password= @password";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    command.Parameters.AddWithValue("@password", password);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                     dato1 = Convert.ToInt32(reader["count"]);   
+                    }
+                }
+                if (dato1 == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public bool Exist(string mail)
         {
             int dato1;
@@ -104,8 +134,6 @@ namespace MejorPrecio3.Persistence
                         his.Enqueue(dato1[i]);
                     }
                 }
-
-
                 return his;
             }
         }
