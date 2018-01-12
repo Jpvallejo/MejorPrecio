@@ -59,20 +59,20 @@ namespace MejorPrecio3.API
             new UserPersistence().Add(user);
         }
 
-        public bool Login (User user)
+        public bool Login (string password, string mail)
         {
             try
             {
-                byte[] data = System.Text.Encoding.ASCII.GetBytes(user.Password);
+                byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
                 data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-                user.Password = System.Text.Encoding.ASCII.GetString(data);
+                password = System.Text.Encoding.ASCII.GetString(data);
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
             
-            bool success = new UserPersistence().Login(user);
+            bool success = new UserPersistence().Login(password, mail);
             return success;
         }
 

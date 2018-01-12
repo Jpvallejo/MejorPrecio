@@ -33,7 +33,7 @@ namespace MejorPrecio3.Persistence
             }
         }
 
-        public bool Login(User user)
+        public bool Login(String password, String mail)
         {
             using(SqlConnection conn = new SqlConnection(cString))
             {
@@ -43,8 +43,8 @@ namespace MejorPrecio3.Persistence
                 {
                     command.CommandType = CommandType.Text;
                     command.CommandText = "SELECT COUNT(*) as count FROM Users WHERE Mail= @mail and Password= @password";
-                    command.Parameters.AddWithValue("@mail", user.Mail);
-                    command.Parameters.AddWithValue("@password", user.Password);
+                    command.Parameters.AddWithValue("@mail", mail);
+                    command.Parameters.AddWithValue("@password", password);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
