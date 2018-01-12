@@ -2,26 +2,41 @@
 
 
 <script src="http://maps.google.com/maps/api/js?key=AIzaSyC-hZmexho9d0YR06bY7q_Bvqj0mcuOna4&sensor=true" type="text/javascript"></script>
-
-
-<style>
-    #map_canvas img {
-        max-width: none;
-    }
-</style>
-
-<!-- This css is to give a nice big popup "info window" when a marker is clicked on the map -->
-<style>
-    .infoDiv {
-        height: 200px;
-        width: 300px;
-        -webkit-user-select: none;
-        background-color: white;
-    }
-</style>
 <br />
+
+<button type="button" id="list_toggle"><i class="fa fa-list" aria-hidden="true"></i></button>
+<button type="button" id="map_toggle"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
 <!-- This is the div that will contain the Google Map -->
 <div id="map_canvas" style="height: 550px;"></div>
+
+
+<table id="list" hidden class="table">
+    <thead>
+        <h2>@Model.First().productName - @Model.First().productBrand. @Model.First().productBarcode</h2>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.adress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.adress)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <!-- Enclose the Javascript in a "section" so that it is rendered in the correct order after scripts have been loaded etc -->
 @section scripts {
@@ -59,6 +74,7 @@
             fullscreenControl: true
         };
 
+
         // This makes the div with id "map_canvas" a google map
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
@@ -95,5 +111,33 @@
 
 
         </script>
+        <script>
+            $("#list_toggle").click(function () {
+                $("#map_canvas").hide("slow");
+                $("#list").show("slow");
+
+            });
+            $("#map_toggle").click(function () {
+                $("#list").hide("slow");
+                $("#map_canvas").show("slow");
+            });
+        </script>
     </section>
-} 
+}
+
+
+<style>
+    #map_canvas img {
+        max-width: none;
+    }
+</style>
+
+<!-- This css is to give a nice big popup "info window" when a marker is clicked on the map -->
+<style>
+    .infoDiv {
+        height: 200px;
+        width: 300px;
+        -webkit-user-select: none;
+        background-color: white;
+    }
+</style>
