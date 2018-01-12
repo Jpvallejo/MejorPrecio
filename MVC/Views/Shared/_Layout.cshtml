@@ -75,9 +75,11 @@
                     <li style="">
 
                         <form class="navbar-form" action="/Prices/BarcodeUploading" method="POST" enctype="multipart/form-data">
-                            <input type="file" name="file" id="selectedFile" style="display:none;" />
-                            <input id="upload" type="button" class="btn" value="&#xf030;" onclick="document.getElementById('selectedFile').click();" />
-                            <button type="submit" class="btn btn-primary" style="border-radius:3px; background-color:aquamarine,">Buscar por Codigo de Barras</button>
+                            <div class="input-group col-md-12">
+                                <input type="file" name="file" id="selectedFile" style="display:none;" />
+                                <input id="upload" type="button" class="btn" value="&#xf030;" onclick="document.getElementById('selectedFile').click();" />
+                                <button type="submit" class="btn btn-primary">Buscar por Codigo de Barras</button>
+                            </div>
                         </form>
 
 
