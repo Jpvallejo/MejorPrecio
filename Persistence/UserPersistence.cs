@@ -33,7 +33,7 @@ namespace MejorPrecio3.Persistence
             }
         }
 
-        public bool Login(string mail, string password)
+        public bool Login(User user)
         {
             using(SqlConnection conn = new SqlConnection(cString))
             {
@@ -43,14 +43,15 @@ namespace MejorPrecio3.Persistence
                 {
                     command.CommandType = CommandType.Text;
                     command.CommandText = "SELECT COUNT(*) as count FROM Users WHERE Mail= @mail and Password= @password";
-                    command.Parameters.AddWithValue("@mail", mail);
-                    command.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@mail", user.Mail);
+                    command.Parameters.AddWithValue("@password", user.Password);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
                      dato1 = Convert.ToInt32(reader["count"]);   
                     }
                 }
+                conn.Close();
                 if (dato1 == 1)
                 {
                     return true;
@@ -81,8 +82,13 @@ namespace MejorPrecio3.Persistence
                 }
             }
             if (dato1 > 0)
+            {
                 return true;
-            return false;
+            }
+            else
+            {
+                return false;
+            }
         }
         public void UpdateHistory(User us)
         {
