@@ -57,7 +57,7 @@ namespace MejorPrecio3.MVC.Controllers
         {
             var geocoder = new Geocoder();
             var latlong = geocoder.GetLatLong(model.location);
-            if(new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
+            if(!new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
             {
                 model.location = String.Empty;
                 ModelState.AddModelError("location", "La direccion es invalida");

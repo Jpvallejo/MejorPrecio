@@ -4,8 +4,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @using (Html.BeginForm("", "Products", FormMethod.Post))
-        {
+        <form action="/Products" method="POST">
             <div class="form-group">
                 <label class="control-label">Nombre</label>
                 <input asp-for="Name" class="form-control" id="provider-remote" />
@@ -22,6 +21,6 @@
                 <span asp-validation-for="Barcode" class="text-danger"></span>
             </div>
             <input type="submit" value="Subir Producto" />
-        }
+        </form>
     </div>
 </div>

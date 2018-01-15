@@ -15,10 +15,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @using (Html.BeginForm("", "Prices", FormMethod.Post))
-        {
-
-            <div class = "form-group">
+        <form action="/Prices" method="POST">
+            <div class="form-group">
 
                 <label class="control-label">Product Name</label>
                 <input asp-for="selectedProduct" class="form-control" id="provider-remote" />
@@ -36,7 +34,7 @@
                 <span asp-validation-for="location" class="text-danger"></span>
             </div>
             <input type="submit" value="Subir Producto" />
-        }
+        </form>
     </div>
 </div>
 
