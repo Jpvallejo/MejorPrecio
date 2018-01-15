@@ -38,7 +38,11 @@ namespace MejorPrecio3.API
         {
             var pass = user.Password;
             try
-            {
+                {
+            
+                if (String.IsNullOrEmpty(user.Name))
+                    throw new Exception("Error en el usuario. Debe tener Nombre");
+
                 Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
                 if (!pat.IsMatch(user.Password))
                     throw new Exception("Error en la contrasena +8, Mayus,Minus,numero");
@@ -46,6 +50,9 @@ namespace MejorPrecio3.API
                 Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
                 if (!regex.IsMatch(user.Mail))
                     throw new Exception("Error en el mail");
+
+                if (user.Age <= 0 || user.Age > 100)
+                    throw new Exception("Error en la edad. Debes ser mayor a 0, y menor a 100");
 
                 byte[] data = System.Text.Encoding.ASCII.GetBytes(user.Password);
                 data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
