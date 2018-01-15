@@ -43,7 +43,8 @@ namespace MejorPrecio3.MVC.Controllers
                 }
                 catch(Exception e)
                 {
-                    return StatusCode(412,e.Message);
+                    ModelState.AddModelError("Password",e.Message);
+                    return View("Register", userAdd);
                 }
                 return StatusCode(204);
             }
