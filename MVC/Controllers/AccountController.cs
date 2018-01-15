@@ -20,13 +20,9 @@ namespace MejorPrecio3.MVC.Controllers
             return View(model);
         }
 
-
-
-
         [HttpPost]
-        public IActionResult Post( UserAdd userAdd)
+        public IActionResult Post(UserAdd userAdd)
         {
-
             User user = new User()
             {
                 Age = userAdd.Age,
@@ -37,6 +33,7 @@ namespace MejorPrecio3.MVC.Controllers
                 Mail = userAdd.Mail,
                 Name = userAdd.Name
             };
+
             bool exists = api.Exist(user.Mail);
             if (!exists)
             {
@@ -54,16 +51,16 @@ namespace MejorPrecio3.MVC.Controllers
             {
                 return Content("El usuario ya existe");
             }
-
-
-
         }
+
+
         [HttpPut("ModificarContraseña")]
         public IActionResult ModificarContraseña(string Email, string PassAnt, string newPass)
         {
-
             return Content("");
         }
+        
+        
         [HttpGet("Login")]
         public IActionResult Login()
         {
@@ -73,23 +70,42 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost("Login")]
-        public IActionResult Login(UserAdd user)
+        public IActionResult Login(LoginViewModel user)
         {
-            return StatusCode(501);
+            bool success;
+            try{
+                success = api.Login(user.Password, user.Mail);
+            }
+
+            catch (Exception e)
+            {
+                return StatusCode(412,e.Message);
+            }
+
+            if (success)
+            {
+                return StatusCode(200, "Ha iniciado sesion exitosamente");
+            }
+            else{
+                return StatusCode(401, "Los datos no corresponden a ningun usuario");
+            }
         }
 
+        
         [HttpPost("LogOff")]
         public IActionResult LogOff(UserAdd user)
         {
             return StatusCode(501);
         }
 
+        
         [HttpGet("RecoveryPassword")]
         public IActionResult RecoveryPassword()
         {
             return View();
         }
 
+        
         [HttpPost("RecoveryPassword")]
         public IActionResult RecoveryPassword(string email)
         {
@@ -117,10 +133,12 @@ namespace MejorPrecio3.MVC.Controllers
             return View(model);
             }
 
-            catch (Exception e){
+            catch (Exception e)
+            {
                 return StatusCode(412,e.Message);
             }
         }
+
 
         [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
@@ -134,6 +152,5 @@ namespace MejorPrecio3.MVC.Controllers
             }
             return StatusCode(200);
         }
-
     }
 }
