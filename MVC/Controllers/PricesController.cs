@@ -7,6 +7,7 @@ using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
 using MejorPrecio3.MVC.Models;
+using System.Drawing;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -34,7 +35,7 @@ namespace MejorPrecio3.MVC.Controllers
         {
             return View(api.GetAllPrices());
         }
-        
+
         [Route("List")]
         public JsonResult List(string Prefix)
         {
@@ -47,7 +48,7 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("Create")]
         public IActionResult Create()
         {
-            var model= new PriceViewModel();
+            var model = new PriceViewModel();
             return View(model);
         }
         //[Authorize]
@@ -56,7 +57,19 @@ namespace MejorPrecio3.MVC.Controllers
         {
             var geocoder = new Geocoder();
             var latlong = geocoder.GetLatLong(model.location);
+            if(new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
+            {
+                model.location = String.Empty;
+                ModelState.AddModelError("location", "La direccion es invalida");
+                return View("Create", model);
+            }
             var product = api.GetProductByName(model.selectedProduct);
+            if(product.Name == null)
+            {
+                model.selectedProduct = String.Empty;
+                ModelState.AddModelError("selectedProduct","El producto no existe");
+                return View("Create",model);
+            }
             var price = new Price()
             {
                 price = model.price,
@@ -68,7 +81,7 @@ namespace MejorPrecio3.MVC.Controllers
             };
             if (api.SavePrice(price))
             {
-                return RedirectToAction("Index","");
+                return RedirectToAction("Index", "");
 
             }
 
@@ -113,3 +126,5 @@ namespace MejorPrecio3.MVC.Controllers
 
     }
 }
+
+
