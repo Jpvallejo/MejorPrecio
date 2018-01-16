@@ -5,10 +5,12 @@ using MejorPrecio3.API;
 using System.Text.RegularExpressions;
 using MejorPrecio3.MVC.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Account")]
+    [Authorize]
     public class AccountController : Controller
     {
         SearchBestPrice api = new SearchBestPrice();
@@ -63,41 +65,7 @@ namespace MejorPrecio3.MVC.Controllers
         
         
         [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            var model = new LoginViewModel();
-            return View(model);
-        }
-
-
-        [HttpPost("Login")]
-        public IActionResult Login(LoginViewModel user)
-        {
-            bool success;
-            try{
-                success = api.Login(user.Password, user.Mail);
-            }
-
-            catch (Exception e)
-            {
-                return StatusCode(412,e.Message);
-            }
-
-            if (success)
-            {
-                return StatusCode(200, "Ha iniciado sesion exitosamente");
-            }
-            else{
-                return StatusCode(401, "Los datos no corresponden a ningun usuario");
-            }
-        }
-
         
-        [HttpPost("LogOff")]
-        public IActionResult LogOff(UserAdd user)
-        {
-            return StatusCode(501);
-        }
 
         
         [HttpGet("RecoveryPassword")]

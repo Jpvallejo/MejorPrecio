@@ -24,6 +24,11 @@ namespace MejorPrecio3.API
             return productList;
         }
 
+        public bool IsUserVerified(string mail, string password)
+        {
+            return true;
+        }
+
         //This function searches products by their barCode
         public List<Price> SearchProductBarcode(string barcode)
         {
