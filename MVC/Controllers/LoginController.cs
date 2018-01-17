@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MejorPrecio3.MVC.Controllers
 {
+    [Route("Login")]
     public class LoginController : Controller
     {
         SearchBestPrice api = new SearchBestPrice();
@@ -20,15 +21,16 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpPost]
         public IActionResult Login(LoginViewModel user)
         {
+            var model = new LoginViewModel(){ Mail = user.Mail};
             if(!api.Login(user.Password, user.Mail))
             {
                 ModelState.AddModelError("mail","El usuario o la contraseña son incorrectos");
-                return View(user);
+                return View(model);
             }
             if(!api.IsUserVerified(user.Mail, user.Password))
             {
-                ModelState.AddModelError("verificationError", "La cuenta no ha sido verificada");
-                return View(user);
+                ModelState.AddModelError("mail", "La cuenta no ha sido verificada");
+                return View(model);
             }
 
             else
