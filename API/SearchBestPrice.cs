@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MejorPrecio3.Models;
@@ -10,18 +11,23 @@ namespace MejorPrecio3.API
 {
     public class SearchBestPrice
     {
-        private static ProductPersistence persistence = new ProductPersistence();
-        
+        private static ProductPersistence productPersistence = new ProductPersistence();
+        private static UserPersistence userPersistence = new UserPersistence();
+
         //This function searches products on a productList by their name and returns
         //all products with that name on another list
         public List<Price> SearchProductName(string productName)
         {
-            var persistence = new ProductPersistence();
             var productList = new List<Price>();
 
-            var product = persistence.GetProductByName(productName);
-            productList = persistence.GetTopFive(product);
+            var product = productPersistence.GetProductByName(productName);
+            productList = productPersistence.GetTopFive(product);
             return productList;
+        }
+
+        public bool IsUserVerified(string mail, string password)
+        {
+            return userPersistence.CheckVerified(mail);
         }
 
         //This function searches products by their barCode
@@ -29,8 +35,8 @@ namespace MejorPrecio3.API
         {
             List<Price> productList = new List<Price>();
 
-            var product = persistence.GetProductByBarcode(barcode);
-            productList = persistence.GetTopFive(product);
+            var product = productPersistence.GetProductByBarcode(barcode);
+            productList = productPersistence.GetTopFive(product);
             return productList;
         }
 
@@ -38,14 +44,13 @@ namespace MejorPrecio3.API
         {
             var pass = user.Password;
             try
-                {
-            
+            {
+
                 if (String.IsNullOrEmpty(user.Name))
                     throw new Exception("Error en el usuario. Debe tener Nombre");
 
-                Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
-                if (!pat.IsMatch(user.Password))
-                    throw new Exception("Error en la contrasena +8, Mayus,Minus,numero");
+                if (!isPasswordValid(user.Password))
+                    throw new Exception("La contraseña deve tener un minimo de 8 caracteres, con una Mayuscula, una minuscula y un número");
 
                 Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
                 if (!regex.IsMatch(user.Mail))
@@ -63,10 +68,28 @@ namespace MejorPrecio3.API
                 throw new Exception(e.Message);
             }
 
-            new UserPersistence().Add(user);
+            userPersistence.Add(user);
         }
 
-        public bool Login (string password, string mail)
+        private bool isPasswordValid(string password)
+        {
+            Regex pat = new Regex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
+            if (!pat.IsMatch(password))
+                return false;
+            return true;
+        }
+
+        public void VerifyUser(Guid token)
+        {
+            userPersistence.VerifyUser(token);
+        }
+
+        public Guid GetUserToken(string mail)
+        {
+            return userPersistence.GetToken(mail);
+        }
+
+        public bool Login(string password, string mail)
         {
             try
             {
@@ -78,58 +101,74 @@ namespace MejorPrecio3.API
             {
                 throw new Exception(e.Message);
             }
-            
-            bool success = new UserPersistence().Login(password, mail);
+
+            bool success = userPersistence.Login(password, mail);
             return success;
         }
 
         public bool Exist(string mail)
         {
-            UserPersistence up = new UserPersistence();
-            bool exist = up.Exist(mail);
+            bool exist = userPersistence.Exist(mail);
             return exist;
         }
 
         public bool SavePrice(Price price)
         {
-            if (persistence.ExistPrice(price))
+            if (productPersistence.ExistPrice(price))
             {
-                return persistence.UpdatePrice(price);
+                return productPersistence.UpdatePrice(price);
             }
             else
             {
-                return persistence.SavePrice(price);
+                return productPersistence.SavePrice(price);
             }
+        }
+
+        public string GetEmailByToken(Guid token)
+        {
+            return userPersistence.GetEmailbyToken(token);
         }
 
         public List<Price> GetAllPrices()
         {
-            return persistence.GetAllPrices();
+            return productPersistence.GetAllPrices();
         }
 
         public List<Product> GetAllProducts()
         {
-            return persistence.GetAllProducts();
+            return productPersistence.GetAllProducts();
         }
 
         public Product GetProductByName(string name)
         {
-            return persistence.GetProductByName(name);
+            return productPersistence.GetProductByName(name);
+        }
+
+        public void ModifyPassword(string mail, string password)
+        {
+            if(!isPasswordValid(password))
+            {
+                throw new Exception("La contraseña deve tener un minimo de 8 caracteres, con una Mayuscula, una minuscula y un número");
+            }
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
+            data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            var newPassword = System.Text.Encoding.ASCII.GetString(data);
+            userPersistence.ModifyPassword(mail, newPassword);
         }
 
         public List<string> GetSimilarNames(string name)
         {
-            return persistence.GetAllNames(name);
+            return productPersistence.GetAllNames(name);
         }
 
         public void DeletePrice(Guid id)
         {
-            persistence.DeletePrice(id);
+            productPersistence.DeletePrice(id);
         }
 
         public bool SaveProduct(Product product)
         {
-            if (persistence.SaveProduct(product))
+            if (productPersistence.SaveProduct(product))
             {
                 return true;
             }
@@ -138,17 +177,17 @@ namespace MejorPrecio3.API
 
         public void DeleteProduct(Guid id)
         {
-            persistence.DeleteProduct(id);
+            productPersistence.DeleteProduct(id);
         }
 
         public void UpdateSearchHistory(User user)
         {
-            new UserPersistence().UpdateHistory(user);
+            userPersistence.UpdateHistory(user);
         }
 
         public IEnumerable<string> GetSearchHistory(Guid userId)
         {
-            var result = new UserPersistence().GetHistory(userId).Cast<string>();
+            var result = userPersistence.GetHistory(userId).Cast<string>();
             return result;
         }
     }

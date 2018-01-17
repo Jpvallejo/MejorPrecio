@@ -5,12 +5,23 @@ using MejorPrecio3.API;
 using System.Text.RegularExpressions;
 using MejorPrecio3.MVC.Models;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using MejorPrecio3.API.Services;
+using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+using System.Threading.Tasks;
 
 namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Account")]
+   // [Authorize]
     public class AccountController : Controller
     {
+        AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions(){
+            SendGridUser = "mejor_precio_3",
+	        SendGridKey = "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"
+        };
         SearchBestPrice api = new SearchBestPrice();
 
         [HttpGet("Register")]
@@ -21,7 +32,7 @@ namespace MejorPrecio3.MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(UserAdd userAdd)
+        public async Task<IActionResult> PostAsync(UserAdd userAdd)
         {
             User user = new User()
             {
@@ -34,12 +45,16 @@ namespace MejorPrecio3.MVC.Controllers
                 Name = userAdd.Name
             };
 
+
             bool exists = api.Exist(user.Mail);
             if (!exists)
             {
                 try
                 {
                     api.CreateUser(user);
+                    var token = api.GetUserToken(user.Mail);
+                    var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/" + token;
+                    await new EmailSender(emailOptions).SendEmailAsync(user.Mail,"Verificacion de cuenta",$"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
                 }
                 catch(Exception e)
                 {
@@ -54,6 +69,17 @@ namespace MejorPrecio3.MVC.Controllers
             }
         }
 
+        [Route("Verify")]
+        [HttpGet("{token}")]
+        public IActionResult VerifyEmail(string token)
+        {
+            api.VerifyUser(Guid.Parse(token));
+            return View("VerifiedUser");
+        }
+
+
+
+
 
         [HttpPut("ModificarContraseña")]
         public IActionResult ModificarContraseña(string Email, string PassAnt, string newPass)
@@ -63,41 +89,7 @@ namespace MejorPrecio3.MVC.Controllers
         
         
         [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            var model = new LoginViewModel();
-            return View(model);
-        }
-
-
-        [HttpPost("Login")]
-        public IActionResult Login(LoginViewModel user)
-        {
-            bool success;
-            try{
-                success = api.Login(user.Password, user.Mail);
-            }
-
-            catch (Exception e)
-            {
-                return StatusCode(412,e.Message);
-            }
-
-            if (success)
-            {
-                return StatusCode(200, "Ha iniciado sesion exitosamente");
-            }
-            else{
-                return StatusCode(401, "Los datos no corresponden a ningun usuario");
-            }
-        }
-
         
-        [HttpPost("LogOff")]
-        public IActionResult LogOff(UserAdd user)
-        {
-            return StatusCode(501);
-        }
 
         
         [HttpGet("RecoveryPassword")]
@@ -108,10 +100,53 @@ namespace MejorPrecio3.MVC.Controllers
 
         
         [HttpPost("RecoveryPassword")]
-        public IActionResult RecoveryPassword(string email)
+        public async Task<IActionResult> RecoveryPasswordAsync(string email)
         {
-            return StatusCode(501);
+            var token = api.GetUserToken(email);
+            var link = "http://" + this.Request.Host + this.Request.Path + "/" + token.ToString();
+            await new EmailSender(emailOptions).SendEmailAsync(email,"Recupero de contraseña",$"Para reestablecer su contraseña haga click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
+            return RedirectToAction("Index","");
         }
+
+        [HttpGet("RecoveryPassword/{token}")]
+        public IActionResult RestorePassword(string token)
+        {
+            var mail = api.GetEmailByToken(Guid.Parse(token));
+            if(mail == String.Empty)
+            {
+                RedirectToAction("Register");
+            }
+            var model = new ModifyPasswordViewModel(){
+                mail = mail
+                  };
+            return View(model);
+        }
+
+        [Route("RestorePassword")]
+        [HttpPost]
+        public IActionResult RestorePassword(ModifyPasswordViewModel model)
+        {
+            if(model.password != model.confirmPassword)
+            {
+                ModelState.AddModelError("password","Las contraseñas no coinciden");
+            }
+            if(!ModelState.IsValid)
+            {
+                return View(new ModifyPasswordViewModel(){mail = model.mail});
+            }
+            try{
+                api.ModifyPassword(model.mail, model.password);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("password",e.Message);
+                return View(new ModifyPasswordViewModel(){mail = model.mail});   
+            }
+            return View("ModifiedCorrectly");
+        }
+
+
+
 
         //[Route("history")]
         [HttpGet("history/{userId}")]
