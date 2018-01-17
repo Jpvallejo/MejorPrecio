@@ -19,7 +19,7 @@ namespace MejorPrecio3.Persistence
                 using (SqlCommand command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "INSERT INTO Users ([Id],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),@name,@mail,@pass,@age,@gender,@verified,@role)";
+                    command.CommandText = "INSERT INTO Users ([Id],[Token],[Name],[Mail],[Password],[Age],[Gender],[Verified] ,[Role]) VALUES (NEWID(),NEWID(),@name,@mail,@pass,@age,@gender,@verified,@role)";
                     command.Parameters.AddWithValue("@name", user.Name);
                     command.Parameters.AddWithValue("@mail", user.Mail);
                     command.Parameters.AddWithValue("@pass", user.Password);
@@ -31,6 +31,27 @@ namespace MejorPrecio3.Persistence
                     conn.Close();
                 }
             }
+        }
+
+        public bool CheckVerified(string mail)
+        {
+                        var isVerified = false;
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT Verified FROM Users WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        isVerified = (bool)reader["Verified"];
+                    }
+                }
+            }
+            return isVerified;
         }
 
         public bool Login(String password, String mail)
@@ -90,6 +111,82 @@ namespace MejorPrecio3.Persistence
                 return false;
             }
         }
+
+        public void VerifyUser(Guid token)
+        {
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "UPDATE Users SET Verified='true', Token=NEWID() WHERE Token= @token";
+                    command.Parameters.AddWithValue("@token", token);
+                    command.ExecuteNonQuery();
+
+                }
+            }
+        }
+
+        public string GetEmailbyToken(Guid token)
+        {
+            var mail = "";
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT Mail FROM Users WHERE Token= @token";
+                    command.Parameters.AddWithValue("@token", token);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        mail = (string)reader["Mail"];
+                    }
+                }
+            }
+            return mail;
+        }
+
+        public void ModifyPassword(string mail, string newPassword)
+        {
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "UPDATE Users SET Password=@password, Token=NEWID() WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    command.Parameters.AddWithValue("@password", newPassword);
+                    command.ExecuteNonQuery();
+
+                }
+            }
+        }
+
+        public Guid GetToken(string mail)
+        {
+            var token = Guid.Empty;
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT Token FROM Users WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        token = (Guid)reader["Token"];
+                    }
+                }
+            }
+            return token;
+        }
+
         public void UpdateHistory(User us)
         {
             Queue his = us.Hisory;
