@@ -54,25 +54,31 @@ namespace MejorPrecio3.Persistence
             return isVerified;
         }
 
-        public string GetRoleWithMail(string mail)
+        public User GetUserWithMail(string mail)
         {
-            var role = "";
+            var user = new User();
             using (SqlConnection conn = new SqlConnection(cString))
             {
                 conn.Open();
                 using (var command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT Role FROM Users WHERE Mail= @mail";
+                    command.CommandText = "SELECT * FROM Users WHERE Mail= @mail";
                     command.Parameters.AddWithValue("@mail", mail);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
-                        role = (string)reader["Role"];
+                        user.Role = (string)reader["Role"];
+                        user.Name = (string)reader["Name"];
+                        user.Age = (int)reader["Age"];
+                        user.Id = (Guid)reader["Id"];
+                        user.Verified = (bool)reader["Verified"];
+                        user.Password = (string)reader["Password"];
+                        user.Mail = mail;
                     }
                 }
             }
-            return role;
+            return user;
         }
 
         public bool Login(String password, String mail)

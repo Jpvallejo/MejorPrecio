@@ -12,7 +12,7 @@ namespace MejorPrecio3.Models
         public int Age { get; set; }
         public char Gender { get; set; }
         public Guid Id { get; set; }
-        public int Verified { get; set; }
+        public bool Verified { get; set; }
         public string Role { get; set; }
         public Queue Hisory { get; set; }
         

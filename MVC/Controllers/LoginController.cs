@@ -20,23 +20,24 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(LoginViewModel user)
+        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(LoginViewModel model)
         {
-            var model = new LoginViewModel() { Mail = user.Mail };
-            if (!api.Login(user.Password, user.Mail))
+            var newModel = new LoginViewModel() { Mail = model.Mail };
+            if (!api.Login(model.Password, model.Mail))
             {
                 ModelState.AddModelError("mail", "El usuario o la contraseña son incorrectos");
-                return View(model);
+                return View(newModel);
             }
-            if (!api.IsUserVerified(user.Mail, user.Password))
+            if (!api.IsUserVerified(model.Mail, model.Password))
             {
                 ModelState.AddModelError("mail", "La cuenta no ha sido verificada");
-                return View(model);
+                return View(newModel);
             }
-
-            var usernameClaim = new Claim(ClaimTypes.Email, model.Mail);
-            var roleClaim = new Claim(ClaimTypes.Role, api.GetRoleForUser(model.Mail));
-            var identity = new ClaimsIdentity(new[] { usernameClaim, roleClaim }, "cookie");
+            var user = api.GetUserByEmail(model.Mail);
+            var emailClaim = new Claim(ClaimTypes.Email, model.Mail);
+            var roleClaim = new Claim(ClaimTypes.Role, user.Mail);
+            var nameClaim = new Claim(ClaimTypes.Name,user.Name);
+            var identity = new ClaimsIdentity(new[] { emailClaim, roleClaim, nameClaim }, "cookie");
             var principal = new ClaimsPrincipal(identity);
 
             await this.HttpContext.SignInAsync(principal);

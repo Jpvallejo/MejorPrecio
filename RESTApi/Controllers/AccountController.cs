@@ -27,7 +27,7 @@ namespace MejorPrecio3.Controllers
             User user = new User()
             {
                 Age = userAdd.Age,
-                Verified = 0,
+                Verified = false,
                 Role = "user",
                 Password = userAdd.Password,
                 Gender = userAdd.Gender,

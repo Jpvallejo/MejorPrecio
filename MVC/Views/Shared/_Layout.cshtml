@@ -90,8 +90,9 @@
             
           </ul>
           <ul class="nav navbar-nav navbar-right">
-                <li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
-                <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>
+              @await Html.PartialAsync("_LoginPartial")
+                <!--<li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
+                <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>-->
           </ul>
         </div>
     </nav>
