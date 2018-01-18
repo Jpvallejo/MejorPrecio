@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MejorPrecio3.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -15,6 +16,7 @@ namespace MejorPrecio3.MVC.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

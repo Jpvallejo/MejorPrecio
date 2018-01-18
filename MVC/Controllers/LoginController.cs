@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using MejorPrecio3.API;
 using MejorPrecio3.MVC.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -19,24 +20,29 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel user)
+        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(LoginViewModel user)
         {
-            var model = new LoginViewModel(){ Mail = user.Mail};
-            if(!api.Login(user.Password, user.Mail))
+            var model = new LoginViewModel() { Mail = user.Mail };
+            if (!api.Login(user.Password, user.Mail))
             {
-                ModelState.AddModelError("mail","El usuario o la contraseña son incorrectos");
+                ModelState.AddModelError("mail", "El usuario o la contraseña son incorrectos");
                 return View(model);
             }
-            if(!api.IsUserVerified(user.Mail, user.Password))
+            if (!api.IsUserVerified(user.Mail, user.Password))
             {
                 ModelState.AddModelError("mail", "La cuenta no ha sido verificada");
                 return View(model);
             }
 
-            else
-            {
-                return StatusCode(401, "Los datos no corresponden a ningun usuario");
-            }
+            var usernameClaim = new Claim(ClaimTypes.Email, model.Mail);
+            var roleClaim = new Claim(ClaimTypes.Role, api.GetRoleForUser(model.Mail));
+            var identity = new ClaimsIdentity(new[] { usernameClaim, roleClaim }, "cookie");
+            var principal = new ClaimsPrincipal(identity);
+
+            await this.HttpContext.SignInAsync(principal);
+
+            return RedirectToAction("Index","");
+
         }
 
 

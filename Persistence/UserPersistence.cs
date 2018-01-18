@@ -35,7 +35,7 @@ namespace MejorPrecio3.Persistence
 
         public bool CheckVerified(string mail)
         {
-                        var isVerified = false;
+            var isVerified = false;
             using (SqlConnection conn = new SqlConnection(cString))
             {
                 conn.Open();
@@ -54,9 +54,30 @@ namespace MejorPrecio3.Persistence
             return isVerified;
         }
 
+        public string GetRoleWithMail(string mail)
+        {
+            var role = "";
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT Role FROM Users WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        role = (string)reader["Role"];
+                    }
+                }
+            }
+            return role;
+        }
+
         public bool Login(String password, String mail)
         {
-            using(SqlConnection conn = new SqlConnection(cString))
+            using (SqlConnection conn = new SqlConnection(cString))
             {
                 int dato1;
                 conn.Open();
@@ -69,7 +90,7 @@ namespace MejorPrecio3.Persistence
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
-                     dato1 = Convert.ToInt32(reader["count"]);   
+                        dato1 = Convert.ToInt32(reader["count"]);
                     }
                 }
                 conn.Close();

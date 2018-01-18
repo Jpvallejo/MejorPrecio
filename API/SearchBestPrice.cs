@@ -40,6 +40,11 @@ namespace MejorPrecio3.API
             return productList;
         }
 
+        public string GetRoleForUser(string mail)
+        {
+            return userPersistence.GetRoleWithMail(mail);
+        }
+
         public void CreateUser(User user)
         {
             var pass = user.Password;
