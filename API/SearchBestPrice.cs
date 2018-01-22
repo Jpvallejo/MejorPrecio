@@ -55,7 +55,7 @@ namespace MejorPrecio3.API
                     throw new Exception("Error en el usuario. Debe tener Nombre");
 
                 if (!isPasswordValid(user.Password))
-                    throw new Exception("La contraseña deve tener un minimo de 8 caracteres, con una Mayuscula, una minuscula y un número");
+                    throw new Exception("La contraseña debe tener un minimo de 8 caracteres, con una Mayuscula, una minuscula y un número");
 
                 Regex regex = new Regex(@"(\w+)@(\w+)\.(\w+)");
                 if (!regex.IsMatch(user.Mail))
