@@ -42,3 +42,7 @@
 #map_canvas img { 
     max-width: none; 
 } 
+
+* {
+    font-family: 'Comfortaa', cursive;
+}

@@ -88,10 +88,6 @@ namespace MejorPrecio3.MVC.Controllers
         }
         
         
-        [HttpGet("Login")]
-        
-
-        
         [HttpGet("RecoveryPassword")]
         public IActionResult RecoveryPassword()
         {
@@ -108,47 +104,7 @@ namespace MejorPrecio3.MVC.Controllers
             return RedirectToAction("Index","");
         }
 
-        [HttpGet("RecoveryPassword/{token}")]
-        public IActionResult RestorePassword(string token)
-        {
-            var mail = api.GetEmailByToken(Guid.Parse(token));
-            if(mail == String.Empty)
-            {
-                RedirectToAction("Register");
-            }
-            var model = new ModifyPasswordViewModel(){
-                mail = mail
-                  };
-            return View(model);
-        }
 
-        [Route("RestorePassword")]
-        [HttpPost]
-        public IActionResult RestorePassword(ModifyPasswordViewModel model)
-        {
-            if(model.password != model.confirmPassword)
-            {
-                ModelState.AddModelError("password","Las contraseñas no coinciden");
-            }
-            if(!ModelState.IsValid)
-            {
-                return View(new ModifyPasswordViewModel(){mail = model.mail});
-            }
-            try{
-                api.ModifyPassword(model.mail, model.password);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError("password",e.Message);
-                return View(new ModifyPasswordViewModel(){mail = model.mail});   
-            }
-            return View("ModifiedCorrectly");
-        }
-
-
-
-
-        //[Route("history")]
         [HttpGet("history/{userId}")]
         public IActionResult GetHistory(Guid userId)
         {

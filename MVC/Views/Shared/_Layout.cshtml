@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="path/to/easy-autocomplete.themes.min.css">
 
         <script src="https://use.fontawesome.com/79eb78ce25.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet"> 
 
     </environment>
     <environment exclude="Development">
@@ -30,26 +31,34 @@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+        
+ 
+
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Menu</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="nabvar-form">
                 <form class="navbar-form" action="/Prices/Create">
                     <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </form>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Mejor Precio</a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="nabvar-dropdown dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Mejor Precio<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" >Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
-                    <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>
-                    <li>
+              </ul>
+            </li>
+             <li>
 
                         <form class="navbar-form" action="/Prices/searchByName">
 
@@ -68,7 +77,7 @@
 
                     </li>
 
-                    <li style="">
+                    <li >
 
                         <form class="navbar-form" action="/Prices/BarcodeUploading" method="POST" enctype="multipart/form-data">
                             <div class="input-group col-md-12">
@@ -77,11 +86,14 @@
                                 <button type="submit" class="btn btn-primary">Buscar por Codigo de Barras</button>
                             </div>
                         </form>
-
-
                     </li>
-                </ul>
-            </div>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+                <li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
+                <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>
+          </ul>
+        </div>
     </nav>
     <div class="container body-content">
         @RenderBody()
@@ -154,10 +166,14 @@
         background-color: white;
         color: #222;
     }
+    *{
+        font-family: 'Patua One',cursive;
+    }
 
     #upload {
         font-family: FontAwesome;
     }
+
 </style>
 
 @RenderSection("Scripts", required: false)
