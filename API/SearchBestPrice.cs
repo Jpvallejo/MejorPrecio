@@ -134,6 +134,11 @@ namespace MejorPrecio3.API
             return userPersistence.GetEmailbyToken(token);
         }
 
+        public void ModifyToken(string mail)
+        {
+            userPersistence.ModifyToken(mail);
+        }
+
         public List<Price> GetAllPrices()
         {
             return productPersistence.GetAllPrices();
@@ -151,7 +156,7 @@ namespace MejorPrecio3.API
 
         public void ModifyPassword(string mail, string password)
         {
-            if(!isPasswordValid(password))
+            if (!isPasswordValid(password))
             {
                 throw new Exception("La contraseña deve tener un minimo de 8 caracteres, con una Mayuscula, una minuscula y un número");
             }
@@ -185,9 +190,9 @@ namespace MejorPrecio3.API
             productPersistence.DeleteProduct(id);
         }
 
-        public void UpdateSearchHistory(User user)
+        public void UpdateSearchHistory(User user, string newProduct)
         {
-            userPersistence.UpdateHistory(user);
+            userPersistence.UpdateHistory(user, newProduct);
         }
 
         public IEnumerable<string> GetSearchHistory(Guid userId)

@@ -11,19 +11,49 @@ using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace MejorPrecio3.MVC.Controllers
 {
     [Route("Account")]
-   // [Authorize]
+    [Authorize]
     public class AccountController : Controller
     {
-        AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions(){
+        AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions()
+        {
             SendGridUser = "mejor_precio_3",
 	        SendGridKey = "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"
         };
         SearchBestPrice api = new SearchBestPrice();
 
+
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var searchHistory = api.GetSearchHistory(Guid.Parse(User.FindFirstValue(ClaimTypes.Sid)));
+            List<HistoryViewModel> history = new List<HistoryViewModel>();
+            int i = 1;
+            foreach (var search in searchHistory)
+            {
+                var historyModel = new HistoryViewModel()
+                {
+                    position = i,
+                    name = search
+                };
+                i++;
+                history.Add(historyModel);
+            }
+            var model = new AccountIndexViewModel(){
+                name = User.Identity.Name,
+                email = User.FindFirstValue(ClaimTypes.Email),
+                history = history,
+                modifyPassword = new ModifyPasswordViewModel()
+            };
+            return View(model);
+        }
+
+        [AllowAnonymous]
         [HttpGet("Register")]
         public IActionResult Register()
         {
@@ -31,6 +61,7 @@ namespace MejorPrecio3.MVC.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> PostAsync(UserAdd userAdd)
         {
@@ -54,11 +85,11 @@ namespace MejorPrecio3.MVC.Controllers
                     api.CreateUser(user);
                     var token = api.GetUserToken(user.Mail);
                     var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/" + token;
-                    await new EmailSender(emailOptions).SendEmailAsync(user.Mail,"Verificacion de cuenta",$"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
+                    await new EmailSender(emailOptions).SendEmailAsync(user.Mail, "Verificacion de cuenta", $"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    ModelState.AddModelError("Password",e.Message);
+                    ModelState.AddModelError("Password", e.Message);
                     return View("Register", userAdd);
                 }
                 return StatusCode(204);
@@ -79,12 +110,68 @@ namespace MejorPrecio3.MVC.Controllers
 
 
 
-
-
-        [HttpPut("ModificarContraseña")]
-        public IActionResult ModificarContraseña(string Email, string PassAnt, string newPass)
+        [HttpGet("RecoveryPassword/{token}")]
+        public IActionResult RestorePassword(string token)
         {
-            return Content("");
+            var mail = api.GetEmailByToken(Guid.Parse(token));
+            if (mail == String.Empty)
+            {
+                RedirectToAction("Register");
+            }
+            var model = new ModifyPasswordViewModel()
+            {
+                mail = mail
+            };
+            return View(model);
+        }
+
+        [Route("RestorePassword")]
+        [HttpPost]
+        public IActionResult RestorePassword(ModifyPasswordViewModel model)
+        {
+            if (model.password != model.confirmPassword)
+            {
+                ModelState.AddModelError("password", "Las contraseñas no coinciden");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(new ModifyPasswordViewModel() { mail = model.mail });
+            }
+            try
+            {
+                api.ModifyPassword(model.mail, model.password);
+                api.ModifyToken(model.mail);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("password", e.Message);
+                return View(new ModifyPasswordViewModel() { mail = model.mail });
+            }
+            return View("ModifiedCorrectly");
+
+        }
+
+        [HttpGet("ModifyPassword")]
+        public IActionResult ModifyPassword(ModifyPasswordViewModel model)
+        {
+            if (model.password != model.confirmPassword)
+            {
+                ModelState.AddModelError("password", "Las contraseñas no coinciden");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(new ModifyPasswordViewModel() { mail = model.mail });
+            }
+            try
+            {
+                api.ModifyPassword(model.mail, model.password);
+            }
+            catch (Exception e)
+        {
+                ModelState.AddModelError("password", e.Message);
+                return View(new ModifyPasswordViewModel() { mail = model.mail });
+            }
+            return View("ModifiedCorrectly");
         }
         
         
@@ -100,8 +187,8 @@ namespace MejorPrecio3.MVC.Controllers
         {
             var token = api.GetUserToken(email);
             var link = "http://" + this.Request.Host + this.Request.Path + "/" + token.ToString();
-            await new EmailSender(emailOptions).SendEmailAsync(email,"Recupero de contraseña",$"Para reestablecer su contraseña haga click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
-            return RedirectToAction("Index","");
+            await new EmailSender(emailOptions).SendEmailAsync(email, "Recupero de contraseña", $"Para reestablecer su contraseña haga click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
+            return RedirectToAction("Index", "");
         }
 
 
@@ -111,8 +198,8 @@ namespace MejorPrecio3.MVC.Controllers
             try{
                 var searchHistory = api.GetSearchHistory(userId);
                 List<HistoryViewModel> model = new List<HistoryViewModel>();
-                int i=1;
-                foreach(var search in searchHistory)
+                int i = 1;
+                foreach (var search in searchHistory)
                 {
                     var historyModel = new HistoryViewModel()
                     {
@@ -127,22 +214,25 @@ namespace MejorPrecio3.MVC.Controllers
 
             catch (Exception e)
             {
-                return StatusCode(412,e.Message);
+                return StatusCode(412, e.Message);
             }
         }
 
-
+        /*
         [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
         {
-            try{
-                api.UpdateSearchHistory(user);
+                    try
+                    {
+                        api.UpdateSearchHistory(user,new);
             }
 
-            catch (Exception e){
+                    catch (Exception e)
+                    {
                 return StatusCode(400, e.Message);
             }
             return StatusCode(200);
         }
+                */
     }
 }

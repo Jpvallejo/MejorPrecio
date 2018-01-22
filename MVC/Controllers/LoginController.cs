@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using MejorPrecio3.API;
 using MejorPrecio3.MVC.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -20,7 +21,7 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> LoginAsync(LoginViewModel model)
+        public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
             var newModel = new LoginViewModel() { Mail = model.Mail };
             if (!api.Login(model.Password, model.Mail))
@@ -36,21 +37,26 @@ namespace MejorPrecio3.MVC.Controllers
             var user = api.GetUserByEmail(model.Mail);
             var emailClaim = new Claim(ClaimTypes.Email, model.Mail);
             var roleClaim = new Claim(ClaimTypes.Role, user.Mail);
-            var nameClaim = new Claim(ClaimTypes.Name,user.Name);
-            var identity = new ClaimsIdentity(new[] { emailClaim, roleClaim, nameClaim }, "cookie");
+            var idClaim = new Claim(ClaimTypes.Sid, user.Id.ToString());
+            var nameClaim = new Claim(ClaimTypes.Name, user.Name);
+            var identity = new ClaimsIdentity(new[] { emailClaim, roleClaim, nameClaim, idClaim }, "cookie");
             var principal = new ClaimsPrincipal(identity);
 
             await this.HttpContext.SignInAsync(principal);
 
-            return RedirectToAction("Index","");
+            User.FindFirstValue(ClaimTypes.Email);
+            return RedirectToAction("Index", "");
 
         }
 
 
         [HttpPost("LogOut")]
-        public IActionResult LogOff()
+        public async Task<IActionResult> Logout()
         {
-            return StatusCode(501);
+            await this.HttpContext.SignOutAsync();
+
+            return RedirectToAction("Index", "");
         }
+
     }
 }
