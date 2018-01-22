@@ -8,7 +8,7 @@ using MejorPrecio3.API.Services;
 using MejorPrecio3.RESTApi.Models;
 using System.Text.Encodings.Web;
 
-namespace MejorPrecio3.Controllers
+namespace MejorPrecio3.RESTApi.Controllers
 {
     [Route("Account")]
     public class AccountController : Controller
@@ -27,7 +27,7 @@ namespace MejorPrecio3.Controllers
             User user = new User()
             {
                 Age = userAdd.Age,
-                Verified = 0,
+                Verified = false,
                 Role = "user",
                 Password = userAdd.Password,
                 Gender = userAdd.Gender,
@@ -70,8 +70,8 @@ namespace MejorPrecio3.Controllers
             return Content("");
         }
 
-        [Route("GetHistory")]
-        [HttpGet("{userId}")]
+        [Route("GetHistory/{userId}")]
+        [HttpGet()]
         public IActionResult GetHistory(Guid userId)
         {
             try{
@@ -83,7 +83,7 @@ namespace MejorPrecio3.Controllers
                 return StatusCode(412,e.Message);
             }
         }
-
+/*
         [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
         {
@@ -95,7 +95,7 @@ namespace MejorPrecio3.Controllers
                 return StatusCode(400, e.Message);
             }
             return StatusCode(200);
-        }
+        }*/
 
 
 

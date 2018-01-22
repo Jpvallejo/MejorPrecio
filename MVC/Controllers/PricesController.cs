@@ -8,6 +8,7 @@ using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
 using MejorPrecio3.MVC.Models;
 using System.Drawing;
+using System.Security.Claims;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -57,18 +58,18 @@ namespace MejorPrecio3.MVC.Controllers
         {
             var geocoder = new Geocoder();
             var latlong = geocoder.GetLatLong(model.location);
-            if(!new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
+            if (!new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
             {
                 model.location = String.Empty;
                 ModelState.AddModelError("location", "La direccion es invalida");
                 return View("Create", model);
             }
             var product = api.GetProductByName(model.selectedProduct);
-            if(product.Name == null)
+            if (product.Name == null)
             {
                 model.selectedProduct = String.Empty;
-                ModelState.AddModelError("selectedProduct","El producto no existe");
-                return View("Create",model);
+                ModelState.AddModelError("selectedProduct", "El producto no existe");
+                return View("Create", model);
             }
             var price = new Price()
             {
@@ -103,6 +104,12 @@ namespace MejorPrecio3.MVC.Controllers
 
             var result = api.SearchProductBarcode(barcode).Select(Translate);
 
+            if (User.Identity.IsAuthenticated)
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
+                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().productName);
+            }
+
             return View("Search", result);
         }
         [Route("searchByName")]
@@ -110,6 +117,11 @@ namespace MejorPrecio3.MVC.Controllers
         public IActionResult SearchWithName(string name)
         {
             var result = api.SearchProductName(name).Select(Translate);
+            if (User.Identity.IsAuthenticated)
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
+                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), name);
+            }
             return View("search", result);
         }
 

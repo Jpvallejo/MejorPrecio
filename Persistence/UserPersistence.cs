@@ -35,7 +35,7 @@ namespace MejorPrecio3.Persistence
 
         public bool CheckVerified(string mail)
         {
-                        var isVerified = false;
+            var isVerified = false;
             using (SqlConnection conn = new SqlConnection(cString))
             {
                 conn.Open();
@@ -54,9 +54,37 @@ namespace MejorPrecio3.Persistence
             return isVerified;
         }
 
+        public User GetUserWithMail(string mail)
+        {
+            var user = new User();
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT * FROM Users WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        user.Role = (string)reader["Role"];
+                        user.Name = (string)reader["Name"];
+                        user.Age = (int)reader["Age"];
+                        user.Id = (Guid)reader["Id"];
+                        user.Verified = (bool)reader["Verified"];
+                        user.Password = (string)reader["Password"];
+                        user.Hisory = GetHistory(user.Id);
+                        user.Mail = mail;
+                    }
+                }
+            }
+            return user;
+        }
+
         public bool Login(String password, String mail)
         {
-            using(SqlConnection conn = new SqlConnection(cString))
+            using (SqlConnection conn = new SqlConnection(cString))
             {
                 int dato1;
                 conn.Open();
@@ -69,7 +97,7 @@ namespace MejorPrecio3.Persistence
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
-                     dato1 = Convert.ToInt32(reader["count"]);   
+                        dato1 = Convert.ToInt32(reader["count"]);
                     }
                 }
                 conn.Close();
@@ -83,6 +111,23 @@ namespace MejorPrecio3.Persistence
                 }
             }
         }
+
+        public void ModifyToken(string mail)
+        {
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "UPDATE Users SET Token=NEWID() WHERE Mail= @mail";
+                    command.Parameters.AddWithValue("@mail", mail);
+                    command.ExecuteNonQuery();
+
+                }
+            }
+        }
+
 
         public bool Exist(string mail)
         {
@@ -157,7 +202,7 @@ namespace MejorPrecio3.Persistence
                 using (var command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "UPDATE Users SET Password=@password, Token=NEWID() WHERE Mail= @mail";
+                    command.CommandText = "UPDATE Users SET Password=@password WHERE Mail= @mail";
                     command.Parameters.AddWithValue("@mail", mail);
                     command.Parameters.AddWithValue("@password", newPassword);
                     command.ExecuteNonQuery();
@@ -187,21 +232,16 @@ namespace MejorPrecio3.Persistence
             return token;
         }
 
-        public void UpdateHistory(User us)
+        public void UpdateHistory(User us, string newProduct)
         {
             Queue his = us.Hisory;
-            string[] dato1 = new string[5];
-            for (int i = 0; i < his.Count; i++)
+            his.Enqueue(newProduct);
+            var strBuilder = new StringBuilder();
+            foreach (var item in his.ToArray())
             {
-                dato1[i] = his.Dequeue().ToString();
+                strBuilder.Append(item);
+                strBuilder.Append(',');
             }
-            StringBuilder stringBuilder = null;
-            for (int i = 0; i <= his.Count - 1; i++)
-            {
-                stringBuilder.Append(dato1[i]);
-                stringBuilder.Append(",");
-            }
-            stringBuilder.Append(dato1[his.Count - 1]);
             using (SqlConnection conn = new SqlConnection(cString))
             {
                 conn.Open();
@@ -210,7 +250,7 @@ namespace MejorPrecio3.Persistence
                     command.CommandType = CommandType.Text;
                     command.CommandText = "Update Users SET SearchHistory=@his WHERE Id=@Id";
                     command.Parameters.AddWithValue("@Id", us.Id);
-                    command.Parameters.AddWithValue("@His", his);
+                    command.Parameters.AddWithValue("@His", strBuilder.ToString());
                     command.ExecuteNonQuery();
                 }
             }

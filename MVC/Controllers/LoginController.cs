@@ -1,4 +1,6 @@
 using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using MejorPrecio3.API;
 using MejorPrecio3.MVC.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -19,31 +21,42 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel user)
+        public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
-            var model = new LoginViewModel(){ Mail = user.Mail};
-            if(!api.Login(user.Password, user.Mail))
+            var newModel = new LoginViewModel() { Mail = model.Mail };
+            if (!api.Login(model.Password, model.Mail))
             {
-                ModelState.AddModelError("mail","El usuario o la contraseña son incorrectos");
-                return View(model);
+                ModelState.AddModelError("mail", "El usuario o la contraseña son incorrectos");
+                return View(newModel);
             }
-            if(!api.IsUserVerified(user.Mail, user.Password))
+            if (!api.IsUserVerified(model.Mail, model.Password))
             {
                 ModelState.AddModelError("mail", "La cuenta no ha sido verificada");
-                return View(model);
+                return View(newModel);
             }
+            var user = api.GetUserByEmail(model.Mail);
+            var emailClaim = new Claim(ClaimTypes.Email, model.Mail);
+            var roleClaim = new Claim(ClaimTypes.Role, user.Mail);
+            var idClaim = new Claim(ClaimTypes.Sid, user.Id.ToString());
+            var nameClaim = new Claim(ClaimTypes.Name, user.Name);
+            var identity = new ClaimsIdentity(new[] { emailClaim, roleClaim, nameClaim, idClaim }, "cookie");
+            var principal = new ClaimsPrincipal(identity);
 
-            else
-            {
-                return StatusCode(401, "Los datos no corresponden a ningun usuario");
-            }
+            await this.HttpContext.SignInAsync(principal);
+
+            User.FindFirstValue(ClaimTypes.Email);
+            return RedirectToAction("Index", "");
+
         }
 
 
         [HttpPost("LogOut")]
-        public IActionResult LogOff()
+        public async Task<IActionResult> Logout()
         {
-            return StatusCode(501);
+            await this.HttpContext.SignOutAsync();
+
+            return RedirectToAction("Index", "");
         }
+
     }
 }
