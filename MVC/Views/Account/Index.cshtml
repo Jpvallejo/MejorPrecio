@@ -89,7 +89,7 @@
     <thead>
         <tr>
                 <th>
-                    Position
+                    Fecha
                 </th>
                 <th>
                     Producto
@@ -101,10 +101,10 @@
 @foreach (var item in Model.history) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.position)
+                @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                <a href="/Prices/SearchByName?name=@item.Product.Name">@Html.DisplayFor(modelItem => item.Product.Name)</a>
             </td>
         </tr>
 }

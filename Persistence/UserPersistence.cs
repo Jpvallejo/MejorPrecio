@@ -68,7 +68,7 @@ namespace MejorPrecio3.Persistence
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         reader.Read();
-                        user.Role = (string)reader["Role"];
+                        user.Role = reader["Role"].ToString();
                         user.Name = (string)reader["Name"];
                         user.Age = (int)reader["Age"];
                         user.Id = (Guid)reader["Id"];
@@ -232,25 +232,19 @@ namespace MejorPrecio3.Persistence
             return token;
         }
 
-        public void UpdateHistory(User us, string newProduct)
+        public void UpdateHistory(Guid userId,string newProduct)
         {
-            Queue his = us.Hisory;
-            his.Enqueue(newProduct);
-            var strBuilder = new StringBuilder();
-            foreach (var item in his.ToArray())
-            {
-                strBuilder.Append(item);
-                strBuilder.Append(',');
-            }
+            var date = DateTimeOffset.Now;
             using (SqlConnection conn = new SqlConnection(cString))
             {
                 conn.Open();
                 using (var command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "Update Users SET SearchHistory=@his WHERE Id=@Id";
-                    command.Parameters.AddWithValue("@Id", us.Id);
-                    command.Parameters.AddWithValue("@His", strBuilder.ToString());
+                    command.CommandText = "INSERT INTO History (IdProduct,IdUser,Date) VALUES(@IdProd, @IdUser,@date)";
+                    command.Parameters.AddWithValue("@IdProd", new ProductPersistence().GetProductByName(newProduct).Id);
+                    command.Parameters.AddWithValue("@IdUser", userId);
+                    command.Parameters.AddWithValue("@date", date);
                     command.ExecuteNonQuery();
                 }
             }
@@ -263,18 +257,18 @@ namespace MejorPrecio3.Persistence
                 Queue his = new Queue();
                 using (var command = Conn.CreateCommand())
                 {
-                    string[] dato1;
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT SearchHistory FROM Users WHERE Id=@ID";
+                    command.CommandText = "SELECT TOP 5 * FROM History WHERE IdUser=@Id ORDER BY Date DESC";
                     command.Parameters.AddWithValue("@Id", IdUser);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        reader.Read();
-                        dato1 = reader["SearchHistory"].ToString().Split(',');
-                    }
-                    for (int i = 0; i < dato1.Length; i++)
-                    {
-                        his.Enqueue(dato1[i]);
+                        while(reader.Read()){
+                            var history = new History(){
+                                Date = (DateTimeOffset)reader["Date"],
+                                Product = new ProductPersistence().GetProductById((Guid)reader["IdProduct"])
+                            };
+                            his.Enqueue(history);
+                        }
                     }
                 }
                 return his;

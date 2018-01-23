@@ -190,14 +190,14 @@ namespace MejorPrecio3.API
             productPersistence.DeleteProduct(id);
         }
 
-        public void UpdateSearchHistory(User user, string newProduct)
+        public void UpdateSearchHistory(Guid userId, string newProduct)
         {
-            userPersistence.UpdateHistory(user, newProduct);
+            userPersistence.UpdateHistory(userId, newProduct);
         }
 
-        public IEnumerable<string> GetSearchHistory(Guid userId)
+        public IEnumerable<History> GetSearchHistory(Guid userId)
         {
-            var result = userPersistence.GetHistory(userId).Cast<string>();
+            var result = userPersistence.GetHistory(userId).Cast<History>();
             return result;
         }
     }

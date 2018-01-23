@@ -70,10 +70,10 @@ namespace MejorPrecio3.Controllers
         {
 
             var result = api.SearchProductBarcode(barcode);
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().product.Name);
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                api.UpdateSearchHistory(userId, result.First().product.Name);
             }
 
             return Json(result);
@@ -83,12 +83,12 @@ namespace MejorPrecio3.Controllers
         public IActionResult SearchWithName(string name)
         {
             var result = api.SearchProductName(name);
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().product.Name);
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                api.UpdateSearchHistory(userId, name);
             }
-            return StatusCode(200,Json(result));
+            return StatusCode(200, Json(result));
         }
 
         [Route("BarcodeUploading")]
@@ -98,7 +98,7 @@ namespace MejorPrecio3.Controllers
             var barcodeService = new BarcodeService();
             var barcode = barcodeService.GetBarcode(file);
 
-            return RedirectToAction("SearchWithBarcode",new {barcode= barcode});
+            return RedirectToAction("SearchWithBarcode", new { barcode = barcode });
         }
 
 

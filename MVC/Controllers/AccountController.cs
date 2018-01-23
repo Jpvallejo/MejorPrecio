@@ -32,22 +32,10 @@ namespace MejorPrecio3.MVC.Controllers
         public IActionResult Index()
         {
             var searchHistory = api.GetSearchHistory(Guid.Parse(User.FindFirstValue(ClaimTypes.Sid)));
-            List<HistoryViewModel> history = new List<HistoryViewModel>();
-            int i = 1;
-            foreach (var search in searchHistory)
-            {
-                var historyModel = new HistoryViewModel()
-                {
-                    position = i,
-                    name = search
-                };
-                i++;
-                history.Add(historyModel);
-            }
             var model = new AccountIndexViewModel(){
                 name = User.Identity.Name,
                 email = User.FindFirstValue(ClaimTypes.Email),
-                history = history,
+                history = new List<History>(searchHistory),
                 modifyPassword = new ModifyPasswordViewModel()
             };
             return View(model);
@@ -191,7 +179,7 @@ namespace MejorPrecio3.MVC.Controllers
             return RedirectToAction("Index", "");
         }
 
-
+/*
         [HttpGet("history/{userId}")]
         public IActionResult GetHistory(Guid userId)
         {
@@ -218,7 +206,6 @@ namespace MejorPrecio3.MVC.Controllers
             }
         }
 
-        /*
         [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
         {
