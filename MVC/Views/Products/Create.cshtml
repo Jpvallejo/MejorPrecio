@@ -17,10 +17,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Barcode" class="control-label">Codigo de Barras</label>
-                <input asp-for="Barcode" class="form-control" type="number" />
+                <input id="barcode" asp-for="Barcode" class="form-control" type="number" />
                 <span asp-validation-for="Barcode" class="text-danger"></span>
             </div>
-            <input type="submit" value="Subir Producto" />
+            <input type="submit" class="btn btn-primary" value="Subir Producto" />
         </form>
     </div>
+
+
+    <div class="col-md-4">
+                            <div class="input-group col-md-12">
+                                <input type="file" name="file" id="file" style="display:none;" />
+                                <input id="upload" type="button" class="btn btn-primary" value="&#xf030;" onclick="document.getElementById('file').click();" />
+                                <input type="button" onclick="GetBarcode();" id="barcode-click" class="btn btn-primary" value="Cargar Codigo de Barras">
+                            </div>
+    </div>
 </div>
+
+
+<script src="~/js/barcodeScript.js"></script>

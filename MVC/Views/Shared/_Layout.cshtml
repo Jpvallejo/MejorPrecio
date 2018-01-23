@@ -30,6 +30,7 @@
 
 </head>
 <body>
+    @using System.Security.Claims;
     <nav class="navbar navbar-inverse navbar-fixed-top">
         
  
@@ -56,6 +57,11 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" >Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if(User.FindFirstValue(ClaimTypes.Role) == "admin")
+                    {
+                        <li><a asp-area="" asp-controller="Prices" asp-action="">Precios</a></li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="">Productos</a></li>
+                    }
               </ul>
             </li>
              <li>
