@@ -136,6 +136,20 @@ namespace MejorPrecio3.MVC.Controllers
         }
 
 
+        [Route("searchByName/{name}")]
+        [HttpGet()]
+        public IActionResult SearchByName(string name)
+        {
+            var result = api.SearchProductName(name);
+            if(User.Identity.IsAuthenticated)
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
+                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().product.Name);
+            }
+            return Json(result);
+        }
+
+
     }
 }
 

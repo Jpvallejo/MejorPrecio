@@ -151,7 +151,7 @@ namespace MejorPrecio3.MVC.Controllers
 
         }
 
-        [HttpGet("ModifyPassword")]
+        [HttpPost("ModifyPassword")]
         public IActionResult ModifyPassword(ModifyPasswordViewModel model)
         {
             if (model.password != model.confirmPassword)
