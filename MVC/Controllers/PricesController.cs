@@ -106,8 +106,8 @@ namespace MejorPrecio3.MVC.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().productName);
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                api.UpdateSearchHistory(userId, result.First().productName);
             }
 
             return View("Search", result);
@@ -119,8 +119,8 @@ namespace MejorPrecio3.MVC.Controllers
             var result = api.SearchProductName(name).Select(Translate);
             if (User.Identity.IsAuthenticated)
             {
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), name);
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                api.UpdateSearchHistory(userId, name);
             }
             return View("search", result);
         }
@@ -143,8 +143,8 @@ namespace MejorPrecio3.MVC.Controllers
             var result = api.SearchProductName(name);
             if(User.Identity.IsAuthenticated)
             {
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
-                api.UpdateSearchHistory(api.GetUserByEmail(userEmail), result.First().product.Name);
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                api.UpdateSearchHistory(userId, name);
             }
             return Json(result);
         }
