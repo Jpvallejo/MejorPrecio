@@ -15,12 +15,11 @@ using MejorPrecio3.RESTApi.Models;
 
 namespace MejorPrecio3.RESTApi.Controllers
 {
-
     [Route("Account")]
     public class AccountController : Controller
     {
         SearchBestPrice api = new SearchBestPrice();
-        
+
         AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions(){
             SendGridUser = "mejor_precio_3",
 	        SendGridKey = "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"
@@ -40,7 +39,6 @@ namespace MejorPrecio3.RESTApi.Controllers
                 Mail = userAdd.Mail,
                 Name = userAdd.Name
             };
-
             if (!api.Exist(user.Mail))
             {
                 try
@@ -54,20 +52,12 @@ namespace MejorPrecio3.RESTApi.Controllers
                 {
                     return StatusCode(412,e.Message);
                 }
-
                 return StatusCode(204);
             }
             else
             {
                 return Content("El usuario ya existe");
             }
-
-
-        }
-        [HttpPut("ModificarContraseña")]
-        public IActionResult ModificarContraseña(string Email, string PassAnt, string newPass)
-        {
-            return Content("");
         }
 
         public IActionResult Login([FromBody] UserAdd user)
@@ -118,13 +108,12 @@ namespace MejorPrecio3.RESTApi.Controllers
             return RedirectToAction("Index","");
         }
 
-        [Route("RestorePassword")]
-        [HttpPut]
+        [HttpPut("RestorePassword")]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
         {
             if(model.password != model.confirmPassword)
             {
-                ModelState.AddModelError("password","Las contraseñas no coinciden");
+                return StatusCode(400,"Las contraseñas no coinciden");
             }
 
             if(!ModelState.IsValid)
@@ -141,7 +130,6 @@ namespace MejorPrecio3.RESTApi.Controllers
             {
                 return StatusCode(400, e.Message);   
             }
-
             return Content("Password modified correctly");
         }
     }
