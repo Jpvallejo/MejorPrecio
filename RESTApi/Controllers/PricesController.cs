@@ -7,6 +7,7 @@ using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
 using System.Security.Claims;
+using MejorPrecio3.RESTApi.Models;
 
 namespace MejorPrecio3.Controllers
 {

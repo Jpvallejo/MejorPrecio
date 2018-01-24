@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MejorPrecio3.Models
+namespace MejorPrecio3.RESTApi.Models
 {
     public class PriceViewModel
     {
