@@ -60,16 +60,6 @@ namespace MejorPrecio3.RESTApi.Controllers
             }
         }
 
-        public IActionResult Login([FromBody] UserAdd user)
-        {
-            return Content("");
-        }
-
-        public IActionResult LogOff([FromBody] UserAdd user)
-        {
-            return Content("");
-        }
-
         [Route("GetHistory/{userId}")]
         [HttpGet()]
         public IActionResult GetHistory(Guid userId)
