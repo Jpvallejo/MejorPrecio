@@ -27,7 +27,7 @@ namespace MejorPrecio3.RESTApi.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> PostAsync(UserAdd userAdd)
+        public async Task<IActionResult> PostAsync([FromBody]UserAdd userAdd)
         {
             User user = new User()
             {
