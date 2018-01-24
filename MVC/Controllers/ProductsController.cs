@@ -54,16 +54,16 @@ namespace MejorPrecio3.MVC.Controllers
 
 
         [HttpPost("GetBarcode")]
-        public IActionResult GetBarcode(IFormFile image)
+        public IActionResult GetBarcode()
         {
             if (HttpContext.Request.Form.Files.Count > 0)
         {
-            image = HttpContext.Request.Form.Files.GetFile("file");
-        }
+            var image = HttpContext.Request.Form.Files.GetFile("file");
             var barcodeService = new BarcodeService();
             var barcode = barcodeService.GetBarcode(image);
-
             return Content(barcode);
+        }
+            return StatusCode(400);
         }
 
     }
