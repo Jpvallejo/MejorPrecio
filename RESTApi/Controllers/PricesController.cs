@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using MejorPrecio3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
