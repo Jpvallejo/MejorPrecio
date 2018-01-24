@@ -3,27 +3,32 @@ using Microsoft.AspNetCore.Mvc;
 using MejorPrecio3.Models;
 using MejorPrecio3.API;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using MejorPrecio3.API.Services;
-using MejorPrecio3.RESTApi.Models;
+using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+using System.Threading.Tasks;
+using System.Security.Claims;
+using MejorPrecio3.RESTApi.Models;
 
 namespace MejorPrecio3.RESTApi.Controllers
 {
     [Route("Account")]
     public class AccountController : Controller
     {
-
         SearchBestPrice api = new SearchBestPrice();
+
         AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions(){
             SendGridUser = "mejor_precio_3",
 	        SendGridKey = "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"
         };
 
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromBody] UserAdd userAdd)
+        public async Task<IActionResult> PostAsync([FromBody]UserAdd userAdd)
         {
-
             User user = new User()
             {
                 Age = userAdd.Age,
@@ -34,12 +39,14 @@ namespace MejorPrecio3.RESTApi.Controllers
                 Mail = userAdd.Mail,
                 Name = userAdd.Name
             };
-            bool exists = api.Exist(user.Mail);
-            if (!exists)
+            if (!api.Exist(user.Mail))
             {
                 try
                 {
                     api.CreateUser(user);
+                    var token = api.GetUserToken(user.Mail);
+                    var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/" + token;
+                    await new EmailSender(emailOptions).SendEmailAsync(user.Mail, "Verificacion de cuenta", $"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
                 }
                 catch(Exception e)
                 {
@@ -51,23 +58,6 @@ namespace MejorPrecio3.RESTApi.Controllers
             {
                 return Content("El usuario ya existe");
             }
-
-
-
-        }
-        [HttpPut("ModificarContraseña")]
-        public IActionResult ModificarContraseña(string Email, string PassAnt, string newPass)
-        {
-
-            return Content("");
-        }
-        public IActionResult Login([FromBody] UserAdd user)
-        {
-            return Content("");
-        }
-        public IActionResult LogOff([FromBody] UserAdd user)
-        {
-            return Content("");
         }
 
         [Route("GetHistory/{userId}")]
@@ -83,6 +73,7 @@ namespace MejorPrecio3.RESTApi.Controllers
                 return StatusCode(412,e.Message);
             }
         }
+
 /*
         [HttpPatch("ActualizarHistorial")]
         public IActionResult UpdateHistory([FromBody]User user)
@@ -95,12 +86,8 @@ namespace MejorPrecio3.RESTApi.Controllers
                 return StatusCode(400, e.Message);
             }
             return StatusCode(200);
-        }*/
-
-
-
-
-
+        }
+*/
         
         [HttpPost("RecoveryPassword")]
         public async Task<IActionResult> RecoveryPasswordAsync(string email)
@@ -111,30 +98,29 @@ namespace MejorPrecio3.RESTApi.Controllers
             return RedirectToAction("Index","");
         }
 
-
-        [Route("RestorePassword")]
-        [HttpPut]
+        [HttpPut("RestorePassword")]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
         {
             if(model.password != model.confirmPassword)
             {
-                ModelState.AddModelError("password","Las contraseñas no coinciden");
+                return StatusCode(400,"Las contraseñas no coinciden");
             }
+
             if(!ModelState.IsValid)
             {
                 return StatusCode(400);
             }
-            try{
+
+            try
+            {
                 api.ModifyPassword(model.mail, model.password);
             }
+
             catch (Exception e)
             {
                 return StatusCode(400, e.Message);   
             }
             return Content("Password modified correctly");
         }
-
-
-
     }
 }
