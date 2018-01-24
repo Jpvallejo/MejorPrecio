@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace MejorPrecio3.Models
+namespace MejorPrecio3.RESTApi.Models
 {
     public class UserAdd
     {
