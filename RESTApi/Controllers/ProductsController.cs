@@ -23,7 +23,7 @@ namespace MejorPrecio3.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message());
+                return StatusCode(400, e.Message);
             }
         }
 
