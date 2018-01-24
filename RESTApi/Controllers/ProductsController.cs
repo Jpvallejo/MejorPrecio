@@ -18,7 +18,14 @@ namespace MejorPrecio3.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return Json(api.GetAllProducts());
+            try
+            {
+                return StatusCode(200, api.GetAllProducts());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message());
+            }
         }
 
 

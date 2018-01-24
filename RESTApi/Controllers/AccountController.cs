@@ -56,7 +56,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             }
             else
             {
-                return Content("El usuario ya existe");
+                return StatusCode(400, "El usuario ya existe");
             }
         }
 
@@ -66,7 +66,7 @@ namespace MejorPrecio3.RESTApi.Controllers
         {
             try{
                 var searchHistory = api.GetSearchHistory(userId);
-                return Json(searchHistory);
+                return StatusCode(200, searchHistory);
             }
 
             catch (Exception e){
@@ -95,7 +95,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             var token = api.GetUserToken(email);
             var link = "http://" + this.Request.Host + this.Request.Path + "/" + token.ToString();
             await new EmailSender(emailOptions).SendEmailAsync(email,"Recupero de contraseña",$"Para reestablecer su contraseña haga click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
-            return RedirectToAction("Index","");
+            return StatusCode(200, "Se ha enviado un eMail a su correo electronico con instrucciones para recuperar su contraseña");
         }
 
         [HttpPut("RestorePassword")]
@@ -120,7 +120,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             {
                 return StatusCode(400, e.Message);   
             }
-            return Content("Password modified correctly");
+            return StatusCode(200,"Password modified correctly");
         }
     }
 }
