@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.RESTApi.Models;
 using System.Text.Encodings.Web;
+using MejorPecio3.RESTApi.Models;
 
 namespace MejorPrecio3.RESTApi.Controllers
 {
