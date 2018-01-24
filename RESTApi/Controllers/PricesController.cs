@@ -7,6 +7,7 @@ using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
 using System.Security.Claims;
+using System.Drawing;
 using MejorPrecio3.RESTApi.Models;
 
 namespace MejorPrecio3.Controllers
@@ -31,16 +32,11 @@ namespace MejorPrecio3.Controllers
         [Route("List")]
         public JsonResult List(string Prefix)
         {
-            try{
-                var model = new PriceViewModel();
-                var prodlist = api.GetSimilarNames(Prefix)
-                    .Select(s => new { Name = s });
+            var model = new PriceViewModel();
+            var prodlist = api.GetSimilarNames(Prefix)
+                .Select(s => new { Name = s });
 
-                return StatusCode(200, prodlist);
-            }
-            catch (Exception e){
-                return StatusCode(400, e.Message);
-            }
+            return Json (prodlist);
         }
 
         //[Authorize]

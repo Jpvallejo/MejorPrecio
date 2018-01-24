@@ -66,7 +66,7 @@ namespace MejorPrecio3.RESTApi.Controllers
         {
             try{
                 var searchHistory = api.GetSearchHistory(userId);
-                return StatusCode(200, searchHistory);
+                return Json(searchHistory);
             }
 
             catch (Exception e){
@@ -120,7 +120,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             {
                 return StatusCode(400, e.Message);   
             }
-            return StatusCode(200,"Password modified correctly");
+            return StatusCode(200, "Password modified correctly");
         }
     }
 }
