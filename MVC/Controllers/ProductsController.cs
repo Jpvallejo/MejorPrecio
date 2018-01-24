@@ -2,6 +2,9 @@ using MejorPrecio3.Models;
 using Microsoft.AspNetCore.Mvc;
 using MejorPrecio3.API;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using MejorPrecio3.API.Services;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -11,20 +14,22 @@ namespace MejorPrecio3.MVC.Controllers
 
         private SearchBestPrice api = new SearchBestPrice();
 
+    [Authorize(Roles ="admin")]
         [HttpGet]
         public IActionResult Index()
         {
             return View(api.GetAllProducts());
         }
 
-
+        [Authorize]
         [HttpGet("Create")]
+        
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize]
+        [Authorize]
         [Route("")]
         [HttpPost]
         public ActionResult Create(Product product)
@@ -38,13 +43,27 @@ namespace MejorPrecio3.MVC.Controllers
 
             return StatusCode(500);
         }
-        // [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [Route("{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;
             api.DeleteProduct(id);
             return Content("Product deleted successfully");
+        }
+
+
+        [HttpPost("GetBarcode")]
+        public IActionResult GetBarcode()
+        {
+            if (HttpContext.Request.Form.Files.Count > 0)
+        {
+            var image = HttpContext.Request.Form.Files.GetFile("file");
+            var barcodeService = new BarcodeService();
+            var barcode = barcodeService.GetBarcode(image);
+            return Content(barcode);
+        }
+            return StatusCode(400);
         }
 
     }
