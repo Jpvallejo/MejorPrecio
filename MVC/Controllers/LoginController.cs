@@ -36,7 +36,7 @@ namespace MejorPrecio3.MVC.Controllers
             }
             var user = api.GetUserByEmail(model.Mail);
             var emailClaim = new Claim(ClaimTypes.Email, model.Mail);
-            var roleClaim = new Claim(ClaimTypes.Role, user.Mail);
+            var roleClaim = new Claim(ClaimTypes.Role, user.Role);
             var idClaim = new Claim(ClaimTypes.Sid, user.Id.ToString());
             var nameClaim = new Claim(ClaimTypes.Name, user.Name);
             var identity = new ClaimsIdentity(new[] { emailClaim, roleClaim, nameClaim, idClaim }, "cookie");

@@ -30,6 +30,7 @@
 
 </head>
 <body>
+    @using System.Security.Claims;
     <nav class="navbar navbar-inverse navbar-fixed-top">
         
  
@@ -47,7 +48,7 @@
           <ul class="nav navbar-nav">
             <li class="nabvar-form">
                 <form class="navbar-form" action="/Prices/Create">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"> Nuevo Precio</i></button>
                 </form>
             </li>
             <li class="dropdown">
@@ -56,6 +57,11 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" >Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if(User.FindFirstValue(ClaimTypes.Role) == "admin")
+                    {
+                        <li><a asp-area="" asp-controller="Prices" asp-action="">Precios</a></li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="">Productos</a></li>
+                    }
               </ul>
             </li>
              <li>
@@ -79,11 +85,14 @@
 
                     <li >
 
-                        <form class="navbar-form" action="/Prices/BarcodeUploading" method="POST" enctype="multipart/form-data">
+                        <form class="navbar-form" action="/Prices/searchByBarcode" method="GET" >
                             <div class="input-group col-md-12">
+                                <input type="number" name="barcode" id="searchBarcode" class="form-control" placeholder="Barcode"/>
+                                <span class="input-group-btn">
                                 <input type="file" name="file" id="selectedFile" style="display:none;" />
-                                <input id="upload" type="button" class="btn" value="&#xf030;" onclick="document.getElementById('selectedFile').click();" />
+                                <input id="upload" type="button" class="btn" value="&#xf030;" onclick="ClickButton('#selectedFile','#searchBarcode');" />
                                 <button type="submit" class="btn btn-primary">Buscar por Codigo de Barras</button>
+                                </span>
                             </div>
                         </form>
                     </li>
@@ -161,6 +170,8 @@
 
     $("#search-box").easyAutocomplete(options);
 </script>
+<script src="~/js/barcodeScript.js"></script>
+
 
 <style>
     .btn {

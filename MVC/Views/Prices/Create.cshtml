@@ -33,13 +33,17 @@
                 <input asp-for="location" class="form-control" style="width:130%" id="autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text"></input>
                 <span asp-validation-for="location" class="text-danger"></span>
             </div>
-            <input type="submit" value="Subir Producto" />
+            <input type="submit" class="btn btn-primary" value="Subir Producto" />
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+
+<div class="col-sm-3">
+    <h3>No existe el producto?</h3>
+    <form action="/Products/Create">
+        <input type="submit" class="btn btn-primary" value="Agregar Producto">
+    </form>
+</div>
 </div>
 
 @section Scripts {
