@@ -45,6 +45,16 @@ namespace MejorPrecio3.API
             return userPersistence.GetUserWithMail(mail);
         }
 
+        public bool CheckValidToken(Guid token)
+        {
+            return userPersistence.CheckValidToken(token);
+        }
+
+        public User GetUserByToken(Guid token)
+        {
+            return userPersistence.GetUserByToken(token);
+        }
+
         public void CreateUser(User user)
         {
             var pass = user.Password;

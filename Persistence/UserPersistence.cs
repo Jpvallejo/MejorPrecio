@@ -54,6 +54,62 @@ namespace MejorPrecio3.Persistence
             return isVerified;
         }
 
+        public User GetUserByToken(Guid token)
+        {
+            var user = new User();
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT * FROM Users WHERE Token= @token";
+                    command.Parameters.AddWithValue("@token", token);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        user.Role = reader["Role"].ToString();
+                        user.Name = (string)reader["Name"];
+                        user.Age = (int)reader["Age"];
+                        user.Id = (Guid)reader["Id"];
+                        user.Verified = (bool)reader["Verified"];
+                        user.Password = (string)reader["Password"];
+                        user.Hisory = GetHistory(user.Id);
+                        user.Mail = (string)reader["Mail"];
+                    }
+                }
+            }
+            return user;
+        }
+
+        public bool CheckValidToken(Guid token)
+        {
+            int dato1;
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT COUNT(*) as count FROM Users WHERE Token= @token";
+                    command.Parameters.AddWithValue("@token", token);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        dato1 = Convert.ToInt32(reader["count"]);
+                    }
+                }
+            }
+            if (dato1 > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public User GetUserWithMail(string mail)
         {
             var user = new User();

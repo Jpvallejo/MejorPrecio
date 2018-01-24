@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MejorPrecio3.RESTApi.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,14 +28,11 @@ namespace RESTApi
         {
             services.AddMvc();
 
-            services.AddAuthentication(options => {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(option => {
-                option.Events.OnRedirectToAccessDenied = async context => {
-                    context.Response.StatusCode = 403;
-                };
-            });
+            services.AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, CustomAuthHandler>(
+                    CustomAuthHandler.Name, "Autenticacion Custom", options => {});
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
