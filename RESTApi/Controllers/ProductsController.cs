@@ -12,7 +12,6 @@ namespace MejorPrecio3.Controllers
     [Route("Products")]
     public class ProductsController : Controller
     {
-
         private SearchBestPrice api = new SearchBestPrice();
 
         [HttpGet]
@@ -38,19 +37,18 @@ namespace MejorPrecio3.Controllers
             if (api.SaveProduct(product))
             {
                 return StatusCode(204);
-
             }
-
             return StatusCode(500);
         }
+
+
         // [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;
             api.DeleteProduct(id);
-            return Content("Product deleted successfully");
+            return StatusCode(200, "Product deleted successfully");
         }
-
     }
 }
