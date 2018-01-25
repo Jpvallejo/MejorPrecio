@@ -6,6 +6,7 @@ using MejorPrecio3.API;
 using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MejorPrecio3.Controllers
 {
@@ -14,6 +15,7 @@ namespace MejorPrecio3.Controllers
     {
         private SearchBestPrice api = new SearchBestPrice();
 
+        [Authorize(Roles="admin")]
         [HttpGet]
         public IActionResult Index()
         {
@@ -28,7 +30,7 @@ namespace MejorPrecio3.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         [Route("")]
         [HttpPost]
         public ActionResult Create([FromBody]Product product)
@@ -40,9 +42,7 @@ namespace MejorPrecio3.Controllers
             }
             return StatusCode(500);
         }
-
-
-        // [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {

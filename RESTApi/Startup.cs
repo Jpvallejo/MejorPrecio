@@ -28,7 +28,9 @@ namespace RESTApi
         {
             services.AddMvc();
 
-            services.AddAuthentication()
+            services.AddAuthentication(options => {
+                options.DefaultScheme = CustomAuthHandler.Name;
+                })
             .AddScheme<AuthenticationSchemeOptions, CustomAuthHandler>(
                     CustomAuthHandler.Name, "Autenticacion Custom", options => {});
 

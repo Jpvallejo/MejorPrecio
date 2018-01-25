@@ -9,6 +9,7 @@ using MejorPrecio3.Services;
 using System.Security.Claims;
 using System.Drawing;
 using MejorPrecio3.RESTApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MejorPrecio3.Controllers
 {
@@ -17,6 +18,7 @@ namespace MejorPrecio3.Controllers
     {
         private SearchBestPrice api = new SearchBestPrice();
 
+        [Authorize(Roles="admin")]
         public IActionResult Index()
         {
             try
@@ -39,8 +41,8 @@ namespace MejorPrecio3.Controllers
             return Json (prodlist);
         }
 
-        //[Authorize]
-        [Route("Create")]
+        [Authorize]
+        [Route("")]
         [HttpPost]
         public ActionResult Create([FromBody]PriceViewModel model)
         {
@@ -70,8 +72,7 @@ namespace MejorPrecio3.Controllers
             }
             return StatusCode(500);
         }
-
-        // [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
