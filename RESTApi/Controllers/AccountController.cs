@@ -27,6 +27,22 @@ namespace MejorPrecio3.RESTApi.Controllers
         };
 
         [AllowAnonymous]
+        [HttpPost("GetToken")]
+        public async Task<IActionResult> GetToken([FromBody]UserLogin model)
+        {
+            if (!api.Login(model.Password, model.Mail))
+            {
+                return StatusCode(400, "Los datos no corresponden a ningun usuario");
+            }
+            if (!api.IsUserVerified(model.Mail, model.Password))
+            {
+                return StatusCode(400,"La cuenta no ha sido verificada");
+            }
+            var token = api.GetUserToken(model.Mail);
+            return StatusCode(200, "Anote su Token, lo va a necesitar: " + token);
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody]UserAdd userAdd)
         {
