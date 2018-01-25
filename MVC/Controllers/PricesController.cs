@@ -103,8 +103,11 @@ namespace MejorPrecio3.MVC.Controllers
         {
 
             var result = api.SearchProductBarcode(barcode).Select(Translate);
-
-            if (User.Identity.IsAuthenticated)
+            if (!result.Any())
+            {
+                result = null;
+            }
+            if (User.Identity.IsAuthenticated && result != null)
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
                 api.UpdateSearchHistory(userId, result.First().productName);
@@ -117,6 +120,10 @@ namespace MejorPrecio3.MVC.Controllers
         public IActionResult SearchWithName(string name)
         {
             var result = api.SearchProductName(name).Select(Translate);
+            if (!result.Any())
+            {
+                result = null;
+            }
             if (User.Identity.IsAuthenticated)
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
@@ -145,8 +152,7 @@ namespace MejorPrecio3.MVC.Controllers
         {
 
             var result = api.SearchProductBarcode(barcode).Select(Translate);
-
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && result.Any())
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
                 api.UpdateSearchHistory(userId, result.First().productName);
