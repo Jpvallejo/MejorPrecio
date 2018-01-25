@@ -101,7 +101,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("{barcode}")]
         public IActionResult SearchWithBarcode(string barcode)
         {
-
+            if(barcode == null)
+            {
+                barcode = String.Empty;
+            }
             var result = api.SearchProductBarcode(barcode).Select(Translate);
             if (!result.Any())
             {
@@ -119,6 +122,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("{name}")]
         public IActionResult SearchWithName(string name)
         {
+            if(name == null)
+            {
+                name = String.Empty;
+            }
             var result = api.SearchProductName(name).Select(Translate);
             if (!result.Any())
             {
@@ -137,6 +144,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("{name}")]
         public IActionResult SearchByName(string name)
         {
+            if(name == null)
+            {
+                name = String.Empty;
+            }
             var result = api.SearchProductName(name).Select(Translate);
             if (User.Identity.IsAuthenticated)
             {
@@ -150,6 +161,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpGet("{barcode}")]
         public IActionResult SearchByBarcode(string barcode)
         {
+            if(barcode == null)
+            {
+                barcode = String.Empty;
+            }
 
             var result = api.SearchProductBarcode(barcode).Select(Translate);
             if (User.Identity.IsAuthenticated && result.Any())
