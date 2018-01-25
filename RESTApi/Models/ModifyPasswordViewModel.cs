@@ -1,4 +1,4 @@
-namespace MejorPecio3.RESTApi.Models
+namespace MejorPrecio3.RESTApi.Models
 {
     public class ModifyPasswordViewModel
     {
