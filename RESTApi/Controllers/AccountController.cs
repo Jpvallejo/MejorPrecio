@@ -15,6 +15,7 @@ using MejorPrecio3.RESTApi.Models;
 
 namespace MejorPrecio3.RESTApi.Controllers
 {
+    [Authorize]
     [Route("Account")]
     public class AccountController : Controller
     {
