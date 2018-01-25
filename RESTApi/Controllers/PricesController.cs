@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using MejorPrecio3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +7,7 @@ using System;
 using MejorPrecio3.API.Services;
 using MejorPrecio3.Services;
 using System.Security.Claims;
+using System.Drawing;
 using MejorPrecio3.RESTApi.Models;
 using Microsoft.AspNetCore.Authorization;
 
@@ -20,7 +21,14 @@ namespace MejorPrecio3.Controllers
         [Authorize(Roles="admin")]
         public IActionResult Index()
         {
-            return Json(api.GetAllPrices());
+            try
+            {
+                return StatusCode(200, api.GetAllPrices());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         [Route("List")]
@@ -30,7 +38,7 @@ namespace MejorPrecio3.Controllers
             var prodlist = api.GetSimilarNames(Prefix)
                 .Select(s => new { Name = s });
 
-            return Json(prodlist);
+            return Json (prodlist);
         }
 
         [Authorize]
@@ -40,7 +48,15 @@ namespace MejorPrecio3.Controllers
         {
             var geocoder = new Geocoder();
             var latlong = geocoder.GetLatLong(model.location);
+            if (!new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
+            {
+                return StatusCode(400, "La direccion debe ser dentro de CABA");
+            }
             var product = api.GetProductByName(model.selectedProduct);
+            if (product.Name == null)
+                {
+                    return StatusCode(400,"El producto no existe");
+                }
             var price = new Price()
             {
                 price = model.price,
@@ -48,14 +64,12 @@ namespace MejorPrecio3.Controllers
                 latitude = latlong.Item1,
                 longitude = latlong.Item2,
                 product = product
-
             };
+
             if (api.SavePrice(price))
             {
                 return StatusCode(204);
-
             }
-
             return StatusCode(500);
         }
         [Authorize(Roles = "admin")]
@@ -64,34 +78,47 @@ namespace MejorPrecio3.Controllers
         {
             // product.product = prod;
             api.DeletePrice(id);
-            return Content("Product deleted successfully");
+            return StatusCode(200, "Product deleted successfully");
         }
 
         [Route("searchByBarcode")]
         [HttpGet("{barcode}")]
         public IActionResult SearchWithBarcode(string barcode)
         {
-
-            var result = api.SearchProductBarcode(barcode);
-            if (User.Identity.IsAuthenticated)
+            try 
             {
-                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
-                api.UpdateSearchHistory(userId, result.First().product.Name);
-            }
+                var result = api.SearchProductBarcode(barcode);
+                if (User.Identity.IsAuthenticated)
+                {
+                    var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                    api.UpdateSearchHistory(userId, result.First().product.Name);
+                }
 
-            return Json(result);
+                return StatusCode(200, result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
         [Route("searchByName/{name}")]
         [HttpGet()]
         public IActionResult SearchWithName(string name)
         {
-            var result = api.SearchProductName(name);
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
-                api.UpdateSearchHistory(userId, name);
+                var result = api.SearchProductName(name);
+                if (User.Identity.IsAuthenticated)
+                {
+                    var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
+                    api.UpdateSearchHistory(userId, name);
+                }
+                return StatusCode(200, Json(result));
             }
-            return StatusCode(200, Json(result));
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         [Route("BarcodeUploading")]
@@ -103,7 +130,5 @@ namespace MejorPrecio3.Controllers
 
             return RedirectToAction("SearchWithBarcode", new { barcode = barcode });
         }
-
-
     }
 }

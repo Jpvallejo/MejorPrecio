@@ -13,14 +13,20 @@ namespace MejorPrecio3.Controllers
     [Route("Products")]
     public class ProductsController : Controller
     {
-
         private SearchBestPrice api = new SearchBestPrice();
 
         [Authorize(Roles="admin")]
         [HttpGet]
         public IActionResult Index()
         {
-            return Json(api.GetAllProducts());
+            try
+            {
+                return StatusCode(200, api.GetAllProducts());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
 
@@ -33,9 +39,7 @@ namespace MejorPrecio3.Controllers
             if (api.SaveProduct(product))
             {
                 return StatusCode(204);
-
             }
-
             return StatusCode(500);
         }
         [Authorize(Roles = "admin")]
@@ -44,8 +48,7 @@ namespace MejorPrecio3.Controllers
         {
             // product.product = prod;
             api.DeleteProduct(id);
-            return Content("Product deleted successfully");
+            return StatusCode(200, "Product deleted successfully");
         }
-
     }
 }
