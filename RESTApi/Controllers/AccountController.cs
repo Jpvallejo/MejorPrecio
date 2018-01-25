@@ -12,9 +12,11 @@ using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using MejorPrecio3.RESTApi.Models;
+using MejorPecio3.RESTApi.Models;
 
 namespace MejorPrecio3.RESTApi.Controllers
 {
+    [Authorize]
     [Route("Account")]
     public class AccountController : Controller
     {
