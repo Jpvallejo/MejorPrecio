@@ -46,7 +46,7 @@ namespace MejorPrecio3.RESTApi.Controllers
                 {
                     api.CreateUser(user);
                     var token = api.GetUserToken(user.Mail);
-                    var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/" + token;
+                    var link = "http://" + this.Request.Host + this.Request.Path + "Verify/?token=" + token;
                     await new EmailSender(emailOptions).SendEmailAsync(user.Mail, "Verificacion de cuenta", $"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
                 }
                 catch(Exception e)
@@ -59,6 +59,15 @@ namespace MejorPrecio3.RESTApi.Controllers
             {
                 return StatusCode(400, "El usuario ya existe");
             }
+        }
+
+        [AllowAnonymous]
+        [Route("Verify")]
+        [HttpGet("{token}")]
+        public IActionResult VerifyEmail(string token)
+        {
+            api.VerifyUser(Guid.Parse(token));
+            return StatusCode(200, "VerifiedUser");
         }
 
         [Route("GetHistory/{userId}")]
