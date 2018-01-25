@@ -59,13 +59,23 @@ function GetDataBarcode(barcode) {
 function SearchWithName(name) {
     clearMarkers();
   var data = GetDataName(name);
-  DrawMarkers(data);
+  if(data.length == 0){
+    document.getElementById("modalButton").click();
+  }
+  else{
+    DrawMarkers(data);
+  }
 }
 
 function SearchWithBarcode(barcode){
     clearMarkers();
     var data = GetDataBarcode(barcode);
-    DrawMarkers(data);
+    if(data.length == 0){
+      document.getElementById("modalButton").click();
+    }
+    else{
+      DrawMarkers(data);
+    }
 }
 
 function DrawMarkers(data) {
