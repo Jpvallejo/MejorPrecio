@@ -9,6 +9,7 @@ using MejorPrecio3.Services;
 using MejorPrecio3.MVC.Models;
 using System.Drawing;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -52,12 +53,22 @@ namespace MejorPrecio3.MVC.Controllers
             var model = new PriceViewModel();
             return View(model);
         }
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public ActionResult Create(PriceViewModel model)
         {
             var geocoder = new Geocoder();
+            if(!api.ProductIsValid(model.selectedProduct))
+            {
+                ModelState.AddModelError("selectedProduct", "El producto no es valido");
+                return View("Create",model);
+            }
             var latlong = geocoder.GetLatLong(model.location);
+            if(latlong == null)
+            {
+                ModelState.AddModelError("location", "La direccion no es valida");
+                return View("Create",model);
+            }
             if (!new CityService().IsInBsAs(new PointF((float)latlong.Item1, (float)latlong.Item2)))
             {
                 model.location = String.Empty;
@@ -88,13 +99,13 @@ namespace MejorPrecio3.MVC.Controllers
 
             return View("Error");
         }
-        // [Authorize(Roles = "admin")]
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        [HttpGet("Delete/{id}")]
         public IActionResult Delete(Guid id)
         {
             // product.product = prod;
             api.DeletePrice(id);
-            return Content("Product deleted successfully");
+            return RedirectToAction("Index");
         }
 
         [Route("searchByBarcode")]

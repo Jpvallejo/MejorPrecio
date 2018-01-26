@@ -348,7 +348,7 @@ namespace MejorPrecio3.Persistence
                     new SqlParameter("@id", product.Id)
                 };
 
-            if (this.ExistProduct(product))
+            if (this.ExistProduct(product.Name))
             {
                 return false;
             }
@@ -375,13 +375,12 @@ namespace MejorPrecio3.Persistence
         }
 
 
-        public bool ExistProduct(Product product)
+        public bool ExistProduct(string productName)
         {
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
-                new SqlParameter("@name", product.Name),
-                new SqlParameter("@brand", product.Brand),
-                new SqlParameter("@barcode", product.Barcode)
+                new SqlParameter("@name", productName),
+                
             };
             using (var conn = new SqlConnection(cString))
             {
@@ -389,7 +388,7 @@ namespace MejorPrecio3.Persistence
                 using (var command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT * FROM Products WHERE Name = @name AND Barcode = @barcode AND Brand = @brand";
+                    command.CommandText = "SELECT * FROM Products WHERE Name = @name";
                     command.Parameters.AddRange(parameters.ToArray());
 
                     var reader = command.ExecuteScalar();

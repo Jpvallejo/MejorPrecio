@@ -13,13 +13,17 @@ namespace MejorPrecio3.Services
         public Tuple<double, double> GetLatLong(string adress)
         {
             IEnumerable<Address> addresses = geocoder.GeocodeAsync(adress + "Buenos Aires Argentina").Result;
+            if (addresses.Count() == 0)
+            {
+                return null;
+            }
             var tuple = new Tuple<double, double>(addresses.First().Coordinates.Latitude, addresses.First().Coordinates.Longitude);
             return tuple;
         }
 
         public string GetAdress(double latitude, double longitude)
         {
-            IEnumerable<Address> addresses = geocoder.ReverseGeocodeAsync(latitude,longitude).Result;
+            IEnumerable<Address> addresses = geocoder.ReverseGeocodeAsync(latitude, longitude).Result;
             return addresses.First().FormattedAddress;
         }
     }
