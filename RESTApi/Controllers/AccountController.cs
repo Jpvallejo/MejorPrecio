@@ -87,12 +87,13 @@ namespace MejorPrecio3.RESTApi.Controllers
             return StatusCode(200, "VerifiedUser");
         }
 
-        [Route("GetHistory/{userId}")]
+        
+        [Route("GetHistory")]
         [HttpGet()]
-        public IActionResult GetHistory(Guid userId)
+        public IActionResult GetHistory()
         {
             try{
-                var searchHistory = api.GetSearchHistory(userId);
+                var searchHistory = api.GetSearchHistory(Guid.Parse(User.FindFirstValue(ClaimTypes.Sid)));
                 return Json(searchHistory);
             }
 
@@ -115,7 +116,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             return StatusCode(200);
         }
 */
-        
+        [AllowAnonymous]
         [HttpPost("RecoveryPassword")]
         public async Task<IActionResult> RecoveryPasswordAsync(string email)
         {
@@ -125,6 +126,7 @@ namespace MejorPrecio3.RESTApi.Controllers
             return StatusCode(200, "Se ha enviado un eMail a su correo electronico con instrucciones para recuperar su contraseña");
         }
 
+        [AllowAnonymous]
         [HttpPut("RestorePassword")]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
         {
