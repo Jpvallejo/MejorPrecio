@@ -39,7 +39,8 @@ namespace MejorPrecio3.RESTApi.Controllers
                 return StatusCode(400,"La cuenta no ha sido verificada");
             }
             var token = api.GetUserToken(model.Mail);
-            return StatusCode(200, "Anote su Token, lo va a necesitar: " + token);
+            await new EmailSender(emailOptions).SendEmailAsync(model.Mail, "Token MejorPrecio3", $"Su token de usuario para MejorPrecio3.com es: " + token);
+            return StatusCode(200, "Le enviamos su token de usuario por correo electronico.");
         }
 
         [AllowAnonymous]
