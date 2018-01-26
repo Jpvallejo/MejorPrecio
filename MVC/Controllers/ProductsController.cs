@@ -49,7 +49,7 @@ namespace MejorPrecio3.MVC.Controllers
         {
             // product.product = prod;
             api.DeleteProduct(id);
-            return Content("Product deleted successfully");
+            return RedirectToAction("Index");
         }
 
 

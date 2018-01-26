@@ -50,6 +50,11 @@ namespace MejorPrecio3.API
             return userPersistence.CheckValidToken(token);
         }
 
+        public bool ProductIsValid(string selectedProduct)
+        {
+            return productPersistence.ExistProduct(selectedProduct);
+        }
+
         public User GetUserByToken(Guid token)
         {
             return userPersistence.GetUserByToken(token);

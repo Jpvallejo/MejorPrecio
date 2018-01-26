@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Security.Claims;
+@{
     Layout = "_HomeLayout";
     ViewData["Title"] = "Home Page";
 }
@@ -28,6 +29,11 @@
                         <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                        @if(User.FindFirstValue(ClaimTypes.Role) == "admin")
+                    {
+                        <li><a asp-area="" asp-controller="Prices" asp-action="">Precios</a></li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="">Productos</a></li>
+                    }
                     </ul>
                 </li>
                 <li>
@@ -45,24 +51,30 @@
 
                 <li>
 
-                        <div class="navbar-form input-group col-md-12">
+                        <form class="navbar-form" action="/Prices/searchByBarcode" method="GET" >
+                            <div class="input-group col-md-12">
                             <input type="number" name="barcode" id="searchBarcode" class="form-control" placeholder="Barcode" />
                             <span class="input-group-btn">
                                 <input type="file" name="file" id="selectedFile" style="display:none;" />
                                 <input id="upload" type="button" class="btn" value="&#xf030;" onclick="ClickButton('#selectedFile','#searchBarcode');" />
                                 <button type="button" onclick="SearchWithBarcode(document.getElementById('searchBarcode').value);" class="btn btn-primary">Buscar por Codigo de Barras</button>
                             </span>
-                        </div>
+                            </div>
+                        </form>
                 </li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @await Html.PartialAsync("_LoginPartial")
-                <!--<li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
-                <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>-->
             </ul>
         </div>
 </nav>
+
+<div style="text-align:center">
+<h1>Mejor Precio</h1>
+<p>Encuentre la ubicacion de los Mejores Precios del Producto que desea con nuestro buscador.</p>
+</div>
+
 
 <a href="#" style="display:none;" id="modalButton" class="btn btn-lg btn-success" data-toggle="modal" data-target="#basicModal">Click to open Modal</a>
 <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
@@ -87,9 +99,6 @@
 <script src="~/js/homeScript.js"></script>
 <script src="~/js/barcodeScript.js"></script>
 
-<style>
-</style>
-
 <!-- This css is to give a nice big popup "info window" when a marker is clicked on the map -->
 <style>
     .infoDiv {
@@ -97,6 +106,13 @@
         width: 300px;
         -webkit-user-select: none;
         background-color: white;
+    }
+    .container{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .navbar-inverse .navbar-nav > li > a {
+        color: #FFFFFF;
     }
 </style>
 <br />
