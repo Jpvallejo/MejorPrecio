@@ -27,6 +27,8 @@ namespace MVC
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddCookie(option => {
+                    option.LoginPath = "/Login/";
+                    option.ExpireTimeSpan = TimeSpan.FromHours(5);
                     option.Events.OnRedirectToAccessDenied = async context => {
                         context.Response.StatusCode = 403;
                     };

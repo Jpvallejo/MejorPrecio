@@ -288,7 +288,7 @@ namespace MejorPrecio3.Persistence
             return token;
         }
 
-        public void UpdateHistory(Guid userId,string newProduct)
+        public void UpdateHistory(Guid userId, string newProduct)
         {
             var date = DateTimeOffset.Now;
             using (SqlConnection conn = new SqlConnection(cString))
@@ -296,15 +296,52 @@ namespace MejorPrecio3.Persistence
                 conn.Open();
                 using (var command = conn.CreateCommand())
                 {
+                    var idProd =new ProductPersistence().GetProductByName(newProduct).Id;
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "INSERT INTO History (IdProduct,IdUser,Date) VALUES(@IdProd, @IdUser,@date)";
-                    command.Parameters.AddWithValue("@IdProd", new ProductPersistence().GetProductByName(newProduct).Id);
-                    command.Parameters.AddWithValue("@IdUser", userId);
+                    if (WasSearched(idProd))
+                    {
+                        command.CommandText = "UPDATE History SET Date=@date WHERE IdProduct=@IdProd";
+                    }
+                    else
+                    {
+                        command.CommandText = "INSERT INTO History (IdProduct,IdUser,Date) VALUES(@IdProd, @IdUser,@date)";
+                        command.Parameters.AddWithValue("@IdUser", userId);
+                    }
+                    command.Parameters.AddWithValue("@IdProd", idProd);
                     command.Parameters.AddWithValue("@date", date);
                     command.ExecuteNonQuery();
                 }
             }
         }
+
+        private bool WasSearched(Guid idProd)
+        {
+            int dato1;
+            using (SqlConnection conn = new SqlConnection(cString))
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT COUNT(*) as count FROM History WHERE IdProduct= @IdProd";
+                    command.Parameters.AddWithValue("@IdProd", idProd);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        reader.Read();
+                        dato1 = Convert.ToInt32(reader["count"]);
+                    }
+                }
+            }
+            if (dato1 > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public Queue GetHistory(Guid IdUser)
         {
             using (SqlConnection Conn = new SqlConnection(cString))
@@ -318,8 +355,10 @@ namespace MejorPrecio3.Persistence
                     command.Parameters.AddWithValue("@Id", IdUser);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while(reader.Read()){
-                            var history = new History(){
+                        while (reader.Read())
+                        {
+                            var history = new History()
+                            {
                                 Date = (DateTimeOffset)reader["Date"],
                                 Product = new ProductPersistence().GetProductById((Guid)reader["IdProduct"])
                             };

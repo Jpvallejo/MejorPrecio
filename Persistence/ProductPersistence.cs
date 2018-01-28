@@ -150,6 +150,7 @@ namespace MejorPrecio3.Persistence
                             actualPrice.price = (decimal)reader["Price"];
                             actualPrice.product = product;
                             actualPrice.Id = (Guid)reader["Id"];
+                            actualPrice.date = (DateTimeOffset)reader["Date"];
 
 
                             list.Add(actualPrice);
@@ -197,7 +198,8 @@ namespace MejorPrecio3.Persistence
                     new SqlParameter("@longitude", price.longitude),
                     new SqlParameter("@unitPrice", price.price),
                     new SqlParameter("@idProduct", price.product.Id),
-                    new SqlParameter("@id", price.Id)
+                    new SqlParameter("@id", price.Id),
+                    new SqlParameter("@date",price.date)
                 };
 
             using (var conn = new SqlConnection(cString))
@@ -206,7 +208,7 @@ namespace MejorPrecio3.Persistence
                 using (var command =  conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "INSERT INTO Prices (Id,Latitude,Longitude,Price,productId) VALUES (@id,@latitude,@longitude, @unitPrice, @idProduct)";
+                    command.CommandText = "INSERT INTO Prices (Id,Latitude,Longitude,Price,productId, Date) VALUES (@id,@latitude,@longitude, @unitPrice, @idProduct,@date)";
                     command.Parameters.AddRange(parameters.ToArray());
                     try
                     {
@@ -259,7 +261,8 @@ namespace MejorPrecio3.Persistence
                     new SqlParameter("@latitude", price.latitude),
                     new SqlParameter("@longitude", price.longitude),
                     new SqlParameter("@unitPrice", price.price),
-                    new SqlParameter("@idProduct", price.product.Id)
+                    new SqlParameter("@idProduct", price.product.Id),
+                    new SqlParameter("@date",price.date)
                 };
             using (var conn = new SqlConnection(cString))
             {
@@ -267,7 +270,7 @@ namespace MejorPrecio3.Persistence
                 using (var command = conn.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "UPDATE Prices SET Price = @unitPrice WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct";
+                    command.CommandText = "UPDATE Prices SET Price = @unitPrice, Date = @date WHERE Latitude = @latitude AND Longitude = @longitude AND productId = @idProduct";
                     command.Parameters.AddRange(parameters.ToArray());
                     try
                     {
@@ -309,7 +312,7 @@ namespace MejorPrecio3.Persistence
                 {
 
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT * FROM Prices";
+                    command.CommandText = "SELECT * FROM Prices ORDER BY Date";
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
@@ -319,6 +322,7 @@ namespace MejorPrecio3.Persistence
                         actualPrice.longitude = (double)reader["Longitude"];
                         actualPrice.price = (decimal)reader["Price"];
                         actualPrice.Id = (Guid)reader["Id"];
+                        actualPrice.date = (DateTimeOffset)reader["Date"];
 
 
                         list.Add(actualPrice);
