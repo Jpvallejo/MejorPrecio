@@ -136,6 +136,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpPost]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
         {
+            if(!CheckRecaptcha(HttpContext.Request.Form["g-recaptcha-response"]))
+            {
+                ModelState.AddModelError("mail", "El Captcha no fue ingresado correctamente");
+            }
             if (model.password != model.confirmPassword)
             {
                 ModelState.AddModelError("password", "Las contraseñas no coinciden");
@@ -161,6 +165,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpPost("ModifyPassword")]
         public IActionResult ModifyPassword(ModifyPasswordViewModel model)
         {
+            if(!CheckRecaptcha(HttpContext.Request.Form["g-recaptcha-response"]))
+            {
+                ModelState.AddModelError("mail", "El Captcha no fue ingresado correctamente");
+            }
             if (model.password != model.confirmPassword)
             {
                 ModelState.AddModelError("password", "Las contraseñas no coinciden");

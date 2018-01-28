@@ -20,19 +20,19 @@
         <form action="/Prices" method="POST">
             <div class="form-group">
 
-                <label class="control-label">Product Name</label>
+                <label class="control-label">Nombre del Producto</label>
                 <input required="required" oninvalid="this.setCustomValidity('Ingrese un Producto')" asp-for="selectedProduct" class="form-control" id="provider-remote" />
                 <span asp-validation-for="selectedProduct" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="price" class="control-label">Price</label>
+                <label asp-for="price" class="control-label">Precio</label>
                 <input required="required" asp-for="price" class="form-control" type="text" pattern="^\d+(\.|\,)\d{2}$" />
                 <span asp-validation-for="price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="location" class="control-label">Location</label>
-                <input required oninvalid="this.setCustomValidity('Ingrese una Direccion')" asp-for="location" class="form-control" style="width:130%" id="autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text"></input>
+                <label asp-for="location" class="control-label">Dirección</label>
+                <input required oninvalid="this.setCustomValidity('Ingrese una Direccion')" asp-for="location" class="form-control" id="autocomplete" placeholder="Ingrese la direccion de la tienda" onFocus="geolocate()" type="text"></input>
                 <span asp-validation-for="location" class="text-danger"></span>
             </div>
             <input type="submit" class="btn btn-primary" value="Subir Producto" />
