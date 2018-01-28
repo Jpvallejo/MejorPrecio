@@ -72,7 +72,7 @@ namespace MejorPrecio3.MVC.Controllers
                 {
                     api.CreateUser(user);
                     var token = api.GetUserToken(user.Mail);
-                    var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/" + token;
+                    var link = "http://" + this.Request.Host + this.Request.Path + "/Verify/?token=" + token;
                     await new EmailSender(emailOptions).SendEmailAsync(user.Mail, "Verificacion de cuenta", $"Confirme su cuenta haciendo click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
                 }
                 catch (Exception e)
@@ -88,6 +88,7 @@ namespace MejorPrecio3.MVC.Controllers
             }
         }
 
+        [AllowAnonymous]
         [Route("Verify")]
         [HttpGet("{token}")]
         public IActionResult VerifyEmail(string token)
@@ -97,7 +98,7 @@ namespace MejorPrecio3.MVC.Controllers
         }
 
 
-
+        [AllowAnonymous]
         [HttpGet("RecoveryPassword/{token}")]
         public IActionResult RestorePassword(string token)
         {
@@ -113,6 +114,7 @@ namespace MejorPrecio3.MVC.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         [Route("RestorePassword")]
         [HttpPost]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
@@ -161,15 +163,8 @@ namespace MejorPrecio3.MVC.Controllers
             }
             return View("ModifiedCorrectly");
         }
-        
-        
-        [HttpGet("RecoveryPassword")]
-        public IActionResult RecoveryPassword()
-        {
-            return View();
-        }
 
-        
+        [AllowAnonymous]
         [HttpPost("RecoveryPassword")]
         public async Task<IActionResult> RecoveryPasswordAsync(string email)
         {
@@ -178,48 +173,5 @@ namespace MejorPrecio3.MVC.Controllers
             await new EmailSender(emailOptions).SendEmailAsync(email, "Recupero de contraseña", $"Para reestablecer su contraseña haga click <a href='{HtmlEncoder.Default.Encode(link)}'>Aquí</a>");
             return RedirectToAction("Index", "");
         }
-
-/*
-        [HttpGet("history/{userId}")]
-        public IActionResult GetHistory(Guid userId)
-        {
-            try{
-                var searchHistory = api.GetSearchHistory(userId);
-                List<HistoryViewModel> model = new List<HistoryViewModel>();
-                int i = 1;
-                foreach (var search in searchHistory)
-                {
-                    var historyModel = new HistoryViewModel()
-                    {
-                        position = i,
-                        name = search
-                    };
-                    i++;
-                    model.Add(historyModel);
-                }
-            return View(model);
-            }
-
-            catch (Exception e)
-            {
-                return StatusCode(412, e.Message);
-            }
-        }
-
-        [HttpPatch("ActualizarHistorial")]
-        public IActionResult UpdateHistory([FromBody]User user)
-        {
-                    try
-                    {
-                        api.UpdateSearchHistory(user,new);
-            }
-
-                    catch (Exception e)
-                    {
-                return StatusCode(400, e.Message);
-            }
-            return StatusCode(200);
-        }
-                */
     }
 }
