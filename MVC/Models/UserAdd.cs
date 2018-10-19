@@ -17,6 +17,8 @@ namespace MejorPrecio3.MVC.Models
         [Required]
         public char Gender { get; set; }
 
+        public bool captcha {get; set;}
+
         
         }
     }

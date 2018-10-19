@@ -12,6 +12,8 @@ using System.Text.Encodings.Web;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 namespace MejorPrecio3.MVC.Controllers
 {
@@ -19,6 +21,15 @@ namespace MejorPrecio3.MVC.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+
+        private bool CheckRecaptcha(string response){
+            string secretKey = "6LfE60IUAAAAANhRueMarM_eOBqLA8uhC55H9Cou"; 
+            var client = new WebClient(); 
+            var result = client.DownloadString(string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}", secretKey, response)); 
+            var obj = JObject.Parse(result); 
+            var status = (bool)obj.SelectToken("success"); 
+            return status;
+        }
         AuthMessageSenderOptions emailOptions = new AuthMessageSenderOptions()
         {
             SendGridUser = "mejor_precio_3",
@@ -51,8 +62,14 @@ namespace MejorPrecio3.MVC.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> PostAsync(UserAdd userAdd)
+        public async Task<IActionResult> Register(UserAdd userAdd)
         {
+            var captchaResponse = HttpContext.Request.Form["g-recaptcha-response"];
+            if(!CheckRecaptcha(captchaResponse))
+            {
+                ModelState.AddModelError("captcha","El Captcha no ha sido ingresado correctamente");
+                return View(userAdd);
+            }
             User user = new User()
             {
                 Age = userAdd.Age,
@@ -80,11 +97,11 @@ namespace MejorPrecio3.MVC.Controllers
                     ModelState.AddModelError("Password", e.Message);
                     return View("Register", userAdd);
                 }
-                return StatusCode(204);
+                return View("ToVerify", userAdd);
             }
             else
             {
-                return Content("El usuario ya existe");
+                return RedirectToAction("Index","Login",new LoginViewModel(){Mail=userAdd.Mail});
             }
         }
 
@@ -119,6 +136,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpPost]
         public IActionResult RestorePassword(ModifyPasswordViewModel model)
         {
+            if(!CheckRecaptcha(HttpContext.Request.Form["g-recaptcha-response"]))
+            {
+                ModelState.AddModelError("mail", "El Captcha no fue ingresado correctamente");
+            }
             if (model.password != model.confirmPassword)
             {
                 ModelState.AddModelError("password", "Las contraseñas no coinciden");
@@ -144,6 +165,10 @@ namespace MejorPrecio3.MVC.Controllers
         [HttpPost("ModifyPassword")]
         public IActionResult ModifyPassword(ModifyPasswordViewModel model)
         {
+            if(!CheckRecaptcha(HttpContext.Request.Form["g-recaptcha-response"]))
+            {
+                ModelState.AddModelError("mail", "El Captcha no fue ingresado correctamente");
+            }
             if (model.password != model.confirmPassword)
             {
                 ModelState.AddModelError("password", "Las contraseñas no coinciden");

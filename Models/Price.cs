@@ -14,6 +14,7 @@ namespace MejorPrecio3.Models
 
         public double longitude {get; set;}
 
+        public DateTimeOffset date { get; set; }
 
         
     }

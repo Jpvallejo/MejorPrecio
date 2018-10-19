@@ -10,22 +10,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.product.Name)
+                Nombre
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.product.Brand)
+                Marca
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.product.Barcode)
+                Codigo de Barras
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.price)
+                Precio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.latitude)
+                Latitud
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.longitude)
+                Longitud
+            </th>
+            <th>
+                Fecha de Carga
             </th>
             <th></th>
         </tr>
@@ -35,23 +38,26 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.Name)
+                    @item.product.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.Brand)
+                    @item.product.Brand
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.Barcode)
+                    @item.product.Barcode
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.price)
+                    @item.price.ToString("c2")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.latitude)
+                    @item.latitude
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.longitude)
+                    @item.longitude
                 </td>
+                <th>
+                    @item.date
+                </th>
                 <td>
                     <a method="get" data-confirm="Are you sure?" asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
                 </td>
@@ -59,3 +65,9 @@
         }
     </tbody>
 </table>
+
+<style>
+    input {
+        border: 0ch;
+    }
+</style>

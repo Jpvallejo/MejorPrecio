@@ -27,12 +27,12 @@ namespace MejorPrecio3.MVC.Controllers
             if (!api.Login(model.Password, model.Mail))
             {
                 ModelState.AddModelError("mail", "El usuario o la contraseña son incorrectos");
-                return View(newModel);
+                return View("Login",newModel);
             }
             if (!api.IsUserVerified(model.Mail, model.Password))
             {
                 ModelState.AddModelError("mail", "La cuenta no ha sido verificada");
-                return View(newModel);
+                return View("Login",newModel);
             }
             var user = api.GetUserByEmail(model.Mail);
             var emailClaim = new Claim(ClaimTypes.Email, model.Mail);

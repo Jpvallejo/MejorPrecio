@@ -102,9 +102,7 @@ function DrawMarkers(data) {
       "</em></h4><p>Aqui el producto se encuentra a <em>$" +
       data[i].price +
       '</em></p> <br> <a href="https://www.google.com/maps/search/?api=1&query=' +
-      data[i].latitude +
-      "," +
-      data[i].longitude +
+      data[i].adress+
       '" target = "_blank">Ver en Google Maps </a></div>';
     google.maps.event.addListener(
       marker,

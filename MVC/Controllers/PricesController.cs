@@ -33,6 +33,7 @@ namespace MejorPrecio3.MVC.Controllers
             };
         }
 
+        [Authorize(Roles="admin")]
         public IActionResult Index()
         {
             return View(api.GetAllPrices());
@@ -47,6 +48,7 @@ namespace MejorPrecio3.MVC.Controllers
             return Json(prodlist);
         }
 
+        [Authorize]
         [HttpGet("Create")]
         public IActionResult Create()
         {
@@ -88,7 +90,8 @@ namespace MejorPrecio3.MVC.Controllers
                 Id = Guid.Empty,
                 latitude = latlong.Item1,
                 longitude = latlong.Item2,
-                product = product
+                product = product,
+                date = DateTimeOffset.Now
 
             };
             if (api.SavePrice(price))
@@ -142,7 +145,7 @@ namespace MejorPrecio3.MVC.Controllers
             {
                 result = null;
             }
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && result!= null)
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
                 api.UpdateSearchHistory(userId, name);
@@ -160,7 +163,7 @@ namespace MejorPrecio3.MVC.Controllers
                 name = String.Empty;
             }
             var result = api.SearchProductName(name).Select(Translate);
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated && result.Any())
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid));
                 api.UpdateSearchHistory(userId, name);
