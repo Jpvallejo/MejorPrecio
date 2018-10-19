@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Mejor Precio</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <!-- JS file -->
+        <script src="path/to/jquery.easy-autocomplete.min.js"></script>
+
+        <!-- CSS file -->
+        <link rel="stylesheet" href="path/to/easy-autocomplete.min.css">
+
+        <!-- Additional CSS Themes file - not required-->
+        <link rel="stylesheet" href="path/to/easy-autocomplete.themes.min.css">
+
+        <script src="https://use.fontawesome.com/79eb78ce25.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet"> 
+
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
+</head>
+<body>
+    @using System.Security.Claims;
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        
+ 
+
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Menu</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="nabvar-form">
+                <form class="navbar-form" action="/Prices/Create">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"> Nuevo Precio</i></button>
+                </form>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="nabvar-dropdown dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Mejor Precio<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" >Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if(User.FindFirstValue(ClaimTypes.Role) == "admin")
+                    {
+                        <li><a asp-area="" asp-controller="Prices" asp-action="">Precios</a></li>
+                        <li><a asp-area="" asp-controller="Products" asp-action="">Productos</a></li>
+                    }
+              </ul>
+            </li>
+             <li>
+
+                        <form class="navbar-form" action="/Prices/searchByName">
+
+                            <div id="custom-search-input">
+                                <div class="input-group col-md-12">
+                                    <input name="name" type="text" id="search-box" class="search-query form-control" placeholder="Search" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class=" fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </li>
+
+                    <li >
+
+                        <form class="navbar-form" action="/Prices/searchByBarcode" method="GET" >
+                            <div class="input-group col-md-12">
+                                <input type="number" name="barcode" id="searchBarcode" class="form-control" placeholder="Barcode"/>
+                                <span class="input-group-btn">
+                                <input type="file" name="file" id="selectedFile" style="display:none;" />
+                                <input id="upload" type="button" class="btn" value="&#xf030;" onclick="ClickButton('#selectedFile','#searchBarcode');" />
+                                <button type="submit" class="btn btn-primary">Buscar por Codigo de Barras</button>
+                                </span>
+                            </div>
+                        </form>
+                    </li>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              @await Html.PartialAsync("_LoginPartial")
+                <!--<li><a asp-area="" asp-controller="Login" asp-action="">Login</a></li>
+                <li><a asp-area="" asp-controller="Account" asp-action="Register">Registro</a></li>-->
+          </ul>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - Mejor Precio 3</p>
+        </footer>
+    </div>
+
+    <environment include="Development">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="~/js/jquery.easy-autocomplete.min.js"></script>
+
+        <!-- CSS file -->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.min.css">
+
+        <!-- Additional CSS Themes file - not required-->
+        <link rel="stylesheet" href="~/js/easy-autocomplete.themes.min.css">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="~/js/jquery.easy-autocomplete.min.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+
+</body>
+
+
+<script>
+    var options = {
+        url: function (phrase) {
+            return "/Prices/list?Prefix=" + phrase;
+        },
+        getValue: "name",
+        list: {
+            match: {
+                enabled: true
+            },
+            sort: {
+                enabled: true
+            },
+            maxNumberOfElements: 8
+        },
+
+        theme: "plate-dark",
+        minLenght: 4
+    };
+
+    $("#search-box").easyAutocomplete(options);
+</script>
+<script src="~/js/barcodeScript.js"></script>
+
+
+<style>
+    .btn {
+        background-color: white;
+        color: #222;
+    }
+    *{
+        font-family: 'Patua One',cursive;
+    }
+
+    #upload {
+        font-family: FontAwesome;
+    }
+
+    .container{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .navbar-inverse .navbar-nav > li > a {
+        color: #FFFFFF;
+    }
+
+</style>
+
+@RenderSection("Scripts", required: false)
+
+</html>

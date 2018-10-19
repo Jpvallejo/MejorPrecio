@@ -1,0 +1,26 @@
+@using System.Security.Claims;
+@if (User.Identity.IsAuthenticated)
+{
+    <li style="float:right;" id="logged-in" class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Hola, @User.Identity.Name <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Account"><i class="fa fa-user"></i> Cuenta</a></li>
+                            <li class="divider"></li>
+                            <li><form style="text-align: center" id="logoutForm" asp-controller="Login" asp-action="Logout" method="post" ><a id="logout" href="javascript:{}" onclick="document.getElementById('logoutForm').submit();" ><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></form></li>
+                        </ul>
+                    </li>
+}
+else
+{
+        <li><a asp-area="Register" asp-controller="Account" asp-action="Register">Register</a></li>
+        <li><a asp-area="" asp-controller="Login" asp-action="Login">Log in</a></li>
+}
+
+@if(User.FindFirstValue(ClaimTypes.Role) == "admin")
+{
+    <style>
+        #logged-in{
+            background-color: darkblue;
+            color: antiquewhite; 
+        }
+    </style>
+}
